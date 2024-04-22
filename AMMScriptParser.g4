@@ -9,6 +9,12 @@ statement : variableDeclaration SEMICOLON
                set b = "test";
                set c = true;
           */
+          | variableAsignment SEMICOLON
+          /*
+               a = 1;
+               b = "test";
+               c = true;
+          */
           | printStatement SEMICOLON
           /*
                print "test";
@@ -40,13 +46,15 @@ statement : variableDeclaration SEMICOLON
                     print a;
                }
           */
-          | functionCall SEMICOLON;
+          | functionCall SEMICOLON
           /*
                test(1, 2);
                test(1=2, true);
           */
+          | expr SEMICOLON;
           
 variableDeclaration : SET ID (EQUAL expr)?;
+variableAsignment : ID EQUAL expr;
 printStatement : PRINT expr;
 errorStatement : ERROR;
 
@@ -61,7 +69,7 @@ loopStatement : forLoop
 forLoop : FOR 
 variableDeclaration SEMICOLON
 expr SEMICOLON 
-expr
+variableAsignment
 LBRACE statement* RBRACE;
 
 whileLoop : WHILE expr  

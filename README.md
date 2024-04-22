@@ -17,3 +17,10 @@ Na Windowsie można zainstalować przez `pip`:
 ```
 antlr4-parse AMMScriptLexer.g4 AMMScriptParser.g4 program -gui
 ```
+
+Potem można wpisać program do konsoli i zakończyć CTRL + Z.
+
+Alternatywnie można uruchomić program z pliku:
+```
+antlr4-parse AMMScriptLexer.g4 AMMScriptParser.g4 program -gui plik_z_programem.amm
+```

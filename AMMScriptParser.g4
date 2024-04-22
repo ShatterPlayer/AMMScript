@@ -4,6 +4,11 @@ options { tokenVocab=AMMScriptLexer; }
 program : statement* EOF;
 
 statement : variableDeclaration SEMICOLON
+          /*
+               set a = 1;
+               set b = "test";
+               set c = true;
+          */
           | printStatement SEMICOLON
           /*
                print "test";

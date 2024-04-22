@@ -15,12 +15,12 @@ statement : variableDeclaration SEMICOLON
                b = "test";
                c = true;
           */
-          | printStatement SEMICOLON
+          | print SEMICOLON
           /*
                print "test";
           */
           | errorStatement
-          | ifStatement
+          | if
           /*
                if a > b {
 
@@ -30,7 +30,7 @@ statement : variableDeclaration SEMICOLON
 
                }
           */
-          | loopStatement
+          | loop
           /*
                for set a=0; a < 10; a = a + 1 {
 
@@ -51,35 +51,31 @@ statement : variableDeclaration SEMICOLON
                test(1, 2);
                test(1=2, true);
           */
-          | expr SEMICOLON
-          | BREAK SEMICOLON
-          | CONTINUE SEMICOLON
-          | RETURN expr SEMICOLON
-          | RETURN SEMICOLON;
+          | expr SEMICOLON;
           
 variableDeclaration : SET ID (EQUAL expr)?;
 variableAsignment : ID EQUAL expr;
-printStatement : PRINT expr;
+print : PRINT expr;
 errorStatement : ERROR;
 
-ifStatement : IF expr  
+if : IF expr  
 LBRACE statement* RBRACE 
 (ELSE IF expr LBRACE statement* RBRACE)*
 (ELSE LBRACE statement* RBRACE)?;
 
-loopStatement : forLoop
-              | whileLoop;
+loop : forLoop
+     | whileLoop;
 
 forLoop : FOR 
 variableDeclaration SEMICOLON
 expr SEMICOLON 
 variableAsignment
-LBRACE statement* RBRACE;
+LBRACE loopStatement* RBRACE;
 
 whileLoop : WHILE expr  
 LBRACE statement* RBRACE;
 
-functionDeclaration : FUNCTION ID LPAREN (ID (EQUAL expr)? (COMMA ID (EQUAL expr)?)*)? RPAREN LBRACE statement* RBRACE;
+functionDeclaration : FUNCTION ID LPAREN (ID (EQUAL expr)? (COMMA ID (EQUAL expr)?)*)? RPAREN LBRACE functionStatement* RBRACE;
 
 functionCall : ID LPAREN (expr (COMMA expr)*)? RPAREN;
 
@@ -95,3 +91,11 @@ expr : expr (PLUS | MINUS | MULTIPLY | DIVIDE) expr
      | TRUE
      | FALSE
      | functionCall;
+
+functionStatement : RETURN expr SEMICOLON
+                  | RETURN SEMICOLON
+                  | statement;
+
+loopStatement  : CONTINUE
+               | BREAK
+               | statement;

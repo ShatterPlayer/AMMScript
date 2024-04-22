@@ -51,7 +51,11 @@ statement : variableDeclaration SEMICOLON
                test(1, 2);
                test(1=2, true);
           */
-          | expr SEMICOLON;
+          | expr SEMICOLON
+          | BREAK SEMICOLON
+          | CONTINUE SEMICOLON
+          | RETURN expr SEMICOLON
+          | RETURN SEMICOLON;
           
 variableDeclaration : SET ID (EQUAL expr)?;
 variableAsignment : ID EQUAL expr;
@@ -89,4 +93,5 @@ expr : expr (PLUS | MINUS | MULTIPLY | DIVIDE) expr
      | ID
      | STRING
      | TRUE
-     | FALSE;
+     | FALSE
+     | functionCall;

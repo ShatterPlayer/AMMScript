@@ -10,6 +10,9 @@ ELSE            : 'else';
 FOR             : 'for';
 WHILE           : 'while';
 FUNCTION        : 'func';
+RETURN          : 'return';
+BREAK           : 'break';
+CONTINUE        : 'continue';
 // Operatory:
 EQUAL           : '=';
 NOT_EQUAL       : '!=';

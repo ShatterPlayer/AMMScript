@@ -1,0 +1,27 @@
+set a = 1;
+set b = "test";
+set c = true;
+
+print "test";
+
+if a > b {
+  print a;
+} else if a > c {
+  print b;
+} else {
+  print c;
+}
+
+func test(a, b="test") {
+  print a;
+  return 123;
+}
+
+for set x=0; x < 10; x = x + 1 {
+  a = a*2;
+}
+
+while a < 10 {
+  print "a mniejsze od 10";
+  test(123);
+}

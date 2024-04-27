@@ -2,6 +2,8 @@ set a = 1;
 set b = "test";
 set c = true;
 
+c += 12;
+
 print "test";
 
 if a > b {
@@ -14,6 +16,30 @@ if a > b {
 
 func test(a, b="test") {
   print a;
+
+  if a > 12 {
+    return;
+  } else if a == 10 {
+    print "a jest rowne 10";
+  } else {
+    return 123;
+  }
+
+  switch a {
+    case 1:
+      print "a jest rowne 1";
+      break;
+    case 2:
+      print "a jest rowne 2";
+      break;
+    case 3:
+      print "a jest rowne 3";
+      break;
+    default:
+      print "a jest rowne czemus innemu";
+      break;
+  }
+
   return 123;
 }
 

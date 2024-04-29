@@ -62,6 +62,7 @@ variableAsignment:
 		| MULTIPLY_EQUAL
 		| DIVIDE_EQUAL
 	) expr;
+
 print: PRINT expr;
 
 if:
@@ -119,7 +120,10 @@ functionDeclaration:
 functionCall: ID LPAREN (expr (COMMA expr)*)? RPAREN;
 
 expr:
-	expr (PLUS | MINUS | MULTIPLY | DIVIDE | MODULO | POWER) expr
+	LPAREN expr RPAREN
+	| expr POWER expr
+	| expr (MULTIPLY | DIVIDE | MODULO) expr
+	| expr (PLUS | MINUS) expr
 	| expr (
 		EQUAL_EQUAL
 		| NOT_EQUAL
@@ -129,7 +133,6 @@ expr:
 		| GREATER_EQUAL
 	) expr
 	| expr (AND | OR) expr
-	| LPAREN expr RPAREN
 	| NUMBER
 	| ID
 	| STRING

@@ -46,6 +46,8 @@ statementInFunctionAndLoop:
 	| print SEMICOLON
 	| functionCall SEMICOLON
 	| expr SEMICOLON
+	| ifInFunctionAndLoop
+	| loopInFunction
 	| BREAK
 	| CONTINUE
 	| RETURN expr SEMICOLON

@@ -1,17 +1,15 @@
-from lexer import lexer
-from parser import parser
+from parser import *
+from lexer import *
 
-def interpret(program):
-    lexer.input(program)
-    for tok in lexer:
-        print(tok)
+def interpret(code):
+    parser.parse(code)
 
-    parser.parse(program)
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     while True:
         try:
-            program = input("Enter program: ")
-            interpret(program)
+            s = input('AMM Script > ')
         except EOFError:
             break
+        if not s:
+            continue
+        interpret(s)

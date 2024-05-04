@@ -14,8 +14,8 @@ def execute_code():
 
     data = request.json
     code = data['code']
-    interpret(code)
-    response = jsonify({"message": "Code executed successfully"})
+    result = interpret(code)
+    response = jsonify(result)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

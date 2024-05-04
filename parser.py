@@ -84,6 +84,7 @@ def p_start(p):
           | expression
     '''
     print(p[1])
+    p[0] = p[1]
 
 def p_expression_number(p):
     'expression : NUMBER'
@@ -92,6 +93,7 @@ def p_expression_number(p):
 def p_expression_print(p):
     'expression : PRINT expression'
     print(p[2])
+    p[0] = p[2]
 
 def p_error(p):
     print("Błąd składni!")

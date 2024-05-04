@@ -60,6 +60,8 @@ FALSE: 'false';
 // Operatory logiczne
 AND: '&&';
 OR: '||';
+NOT: '!';
+
 // Komentarz:
 COMMENT: '#' ~[\r\n]* -> skip;
 // Inne znaki:

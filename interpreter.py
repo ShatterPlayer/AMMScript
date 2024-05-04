@@ -2,7 +2,10 @@ from parser import *
 from lexer import *
 
 def interpret(code):
-    parser.parse(code)
+    try:
+        return parser.parse(code)
+    except Exception as e:
+        return str(e)
 
 if __name__ == '__main__':
     while True:
@@ -12,4 +15,4 @@ if __name__ == '__main__':
             break
         if not s:
             continue
-        interpret(s)
+        result = interpret(s)

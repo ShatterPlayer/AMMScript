@@ -66,7 +66,10 @@ export const AMMScript = () => {
                                                                           cursor: "grab", 
                                                                           position: "fixed", 
                                                                           color: "white", 
-                                                                          fontFamily: 'JetBrains Mono, monospace'}}>  
+                                                                          fontFamily: 'JetBrains Mono, monospace',
+                                                                          paddingLeft: '20px',
+                                                                          paddingTop: '20px'
+                                                                          }}>  
         </textarea>
       </div>
     </div>

@@ -168,9 +168,10 @@
   scrollbar-width: thin;
   scrollbar-color: #b3b3b3 #656464;
   border-radius: 5px;
+  padding-left: 20px;
+  padding-top: 20px;
+
 }
-
-
 
 .AMM-script .rectangle-2 {
   background-color: #000000c4;

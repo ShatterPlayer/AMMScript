@@ -6,12 +6,15 @@ import axios from "axios";
 
 export const AMMScript = () => {
   const [code, setCode] = useState(""); 
+  const [consoleOutput, setConsoleOutput] = useState("");
 
   const compile = () => {
     console.log("Kompilacja w toku...");
     axios.post("http://localhost:5000/interpret", { code }) 
       .then(response => {
+        const resultText = JSON.stringify(response.data);
         console.log(response.data);
+        setConsoleOutput(resultText);
       })
       .catch(error => {
         console.error("Błąd:", error);
@@ -54,8 +57,17 @@ export const AMMScript = () => {
         </div>
         <div className="text-wrapper-6">© 2024 AMM Script</div>
         <div className="text-wrapper-7">AMM Script</div>
-        <textarea id="console" placeholder="AMM Script Console>" style={{ width: "1442px", height: "200px", backgroundColor: "#b8b8b8", border: "1px solid #ccc", bottom: "0px", overflowY: "auto", cursor: "grab", position: "fixed", color: "white", fontFamily: 'JetBrains Mono, monospace'}}></textarea>
-
+        <textarea id="console" placeholder="AMM Script Console>" value={consoleOutput} readOnly style={{ width: "1442px",
+                                                                          height: "200px", 
+                                                                          backgroundColor: "#b8b8b8", 
+                                                                          border: "1px solid #ccc", 
+                                                                          bottom: "0px", 
+                                                                          overflowY: "auto", 
+                                                                          cursor: "grab", 
+                                                                          position: "fixed", 
+                                                                          color: "white", 
+                                                                          fontFamily: 'JetBrains Mono, monospace'}}>  
+        </textarea>
       </div>
     </div>
   );

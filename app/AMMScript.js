@@ -26,8 +26,9 @@ export const AMMScript = () => {
         <div className="overlap-3">
           <div className="background">
             <div className="overlap-4">
-              <div className="rectangle" />
+             <div className="rectangle"/>
               <div className="rectangle-2" />
+              <textarea id="code-input" rows="10" cols="50"></textarea>
               <img className="line" alt="Line" src="https://c.animaapp.com/a0hzXRiM/img/line-.svg" />
               <div className="text-wrapper-4">Write your code below:</div>
             </div>

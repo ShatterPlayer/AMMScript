@@ -164,6 +164,10 @@
   color: #ffffff;
   border: none;
   font-family: 'JetBrains Mono', monospace;
+  overflow-y: auto; 
+  scrollbar-width: thin;
+  scrollbar-color: #b3b3b3 #656464;
+  border-radius: 5px;
 }
 
 

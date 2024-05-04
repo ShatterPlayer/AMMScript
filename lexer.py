@@ -24,11 +24,13 @@ tokens = (
     'MINUS_EQUAL',
     'MULTIPLY_EQUAL',
     'DIVIDE_EQUAL',
-
+    'ASSIGN',
+    'ID'
 )
 
 
 # Reguły tokenów
+t_ASSIGN = r'='
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_MULTIPLY = r'\*'
@@ -50,6 +52,14 @@ t_MULTIPLY_EQUAL = r'\*='
 t_DIVIDE_EQUAL = r'/='
 
 
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.type = reserved.get(t.value, 'ID')
+    return t
+
+reserved = {
+    'print': 'PRINT'
+}
 
 
 # Ignorowane znaki (spacje)

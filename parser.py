@@ -63,6 +63,28 @@ def p_expression_binop(p):
     elif p[2] == '/=':
         p[0] = p[1] / p[3]
 
+def p_statement_assign(p):
+    '''
+    statement : ID ASSIGN expression SEMICOLON
+    '''
+    variables[p[1]] = p[3]
+
+def p_expression_variable(p):
+    'expression : ID'
+    try:
+        p[0] = variables[p[1]]
+    except LookupError:
+        print(f"Undefined variable '{p[1]}'")
+        p[0] = 0
+
+
+def p_start(p):
+    '''
+    start : statement
+          | expression
+    '''
+    print(p[1])
+
 def p_expression_number(p):
     'expression : NUMBER'
     p[0] = p[1]
@@ -71,7 +93,6 @@ def p_expression_print(p):
     'expression : PRINT expression'
     print(p[2])
 
-# Obsługa błędów w parserze
 def p_error(p):
     print("Błąd składni!")
 

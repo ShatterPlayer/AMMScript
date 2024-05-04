@@ -1,0 +1,245 @@
+.AMM-script {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.AMM-script .div {
+  background-color: #ffffff;
+  height: 1024px;
+  overflow: hidden;
+  position: relative;
+  width: 1440px;
+}
+
+.AMM-script .overlap {
+  height: 45px;
+  left: 801px;
+  position: absolute;
+  top: 25px;
+  width: 658px;
+}
+
+.AMM-script .home-button {
+  all: unset;
+  box-sizing: border-box;
+  height: 45px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 262px;
+}
+
+.AMM-script .overlap-group {
+  background: linear-gradient(180deg, rgb(169, 176, 208) 0%, rgb(99, 140, 197) 100%);
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 45px;
+  position: relative;
+  width: 260px;
+}
+
+.AMM-script .text-wrapper {
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 400;
+  left: 54px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 5px;
+  white-space: nowrap;
+  width: 106px;
+}
+
+.AMM-script .about-button {
+  height: 45px;
+  left: 192px;
+  position: absolute;
+  top: 0;
+  width: 262px;
+}
+
+.AMM-script .div-wrapper {
+  background: linear-gradient(180deg, rgb(164, 173, 207) 0%, rgb(98, 139, 196) 100%);
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 45px;
+  position: relative;
+  width: 260px;
+}
+
+.AMM-script .text-wrapper-2 {
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 400;
+  left: 68px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 5px;
+  white-space: nowrap;
+  width: 106px;
+}
+
+.AMM-script .info-button {
+  height: 45px;
+  left: 396px;
+  position: absolute;
+  top: 0;
+  width: 262px;
+}
+
+.AMM-script .overlap-2 {
+  background: linear-gradient(180deg, rgb(166, 174, 208) 0%, rgb(96, 139, 196) 100%);
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 45px;
+  position: relative;
+  width: 260px;
+}
+
+.AMM-script .text-wrapper-3 {
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 400;
+  left: 84px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 5px;
+  white-space: nowrap;
+  width: 106px;
+}
+
+.AMM-script .overlap-3 {
+  height: 904px;
+  left: 0;
+  position: absolute;
+  top: 70px;
+  width: 1442px;
+}
+
+.AMM-script .background {
+  height: 904px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 1442px;
+}
+
+.AMM-script .overlap-4 {
+  background-image: url(https://c.animaapp.com/a0hzXRiM/img/sky-img.png);
+  background-position: 50% 50%;
+  background-size: cover;
+  height: 700px;
+  position: relative;
+  width: 1440px;
+}
+
+.AMM-script .rectangle {
+  background-color: #f0f0f0ed;
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 600px;
+  left: 129px;
+  position: absolute;
+  top: 34px;
+  width: 1177px;
+}
+
+.AMM-script .rectangle-2 {
+  background-color: #000000c4;
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 500px;
+  left: 180px;
+  position: absolute;
+  top: 64px;
+  width: 1073px;
+}
+
+.AMM-script .line {
+  height: 3px;
+  left: 181px;
+  object-fit: cover;
+  position: absolute;
+  top: 129px;
+  width: 1074px;
+}
+
+.AMM-script .text-wrapper-4 {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 400;
+  left: 203px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 85px;
+  width: 392px;
+}
+
+.AMM-script .compile-button {
+  height: 44px;
+  left: 494px;
+  position: absolute;
+  top: 578px;
+  width: 454px;
+}
+
+.AMM-script .overlap-5 {
+  background-image: url(https://c.animaapp.com/a0hzXRiM/img/rectangle-5.svg);
+  background-size: 100% 100%;
+  height: 44px;
+  position: relative;
+  width: 452px;
+}
+
+.AMM-script .text-wrapper-5 {
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 400;
+  left: 173px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 7px;
+  white-space: nowrap;
+  width: 106px;
+}
+
+.AMM-script .text-wrapper-6 {
+  color: #89a0cb;
+  font-size: 15px;
+  font-weight: 400;
+  left: 642px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  top: 780px;
+  white-space: nowrap;
+  width: 161px;
+}
+
+.AMM-script .text-wrapper-7 {
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(180deg, rgb(167, 175, 208) 0%, rgb(97, 139, 196) 100%);
+  background-clip: text;
+  color: transparent;
+  font-size: 35px;
+  font-weight: 400;
+  left: 42px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  text-fill-color: transparent;
+  text-shadow: 0px 4px 4px #00000040;
+  top: 11px;
+  width: 215px;
+}

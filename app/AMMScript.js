@@ -1,12 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import "./AMMScript.css";
 import '../app/globals.css'
+import axios from "axios";
 
-function compile() {
-  console.log("Kompilacja w toku...");
-}
 
 export const AMMScript = () => {
+  const [code, setCode] = useState(""); 
+
+  const compile = () => {
+    console.log("Kompilacja w toku...");
+    axios.post("http://localhost:5000/interpret", { code }) 
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error("Błąd:", error);
+      });
+  };
+
   return (
     <div className="AMM-script">
       <div className="div">
@@ -32,7 +43,7 @@ export const AMMScript = () => {
             <div className="overlap-4">
              <div className="rectangle"/>
               <div className="rectangle-2" />
-              <textarea id="code-input" rows="10" cols="50" placeholder="AMM Script>"></textarea>
+              <textarea id="code-input" rows="10" cols="50" placeholder="AMM Script>" value={code} onChange={(e) => setCode(e.target.value)}></textarea>
               <img className="line" alt="Line" src="https://c.animaapp.com/a0hzXRiM/img/line-.svg" />
               <div className="text-wrapper-4">Write your code below:</div>
             </div>

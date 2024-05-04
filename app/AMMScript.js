@@ -30,11 +30,11 @@ export const AMMScript = () => {
               <div className="text-wrapper">Home</div>
             </div>
           </a>
-          <div className="about-button">
+          <a href="/AboutPage" className="about-button">
             <div className="div-wrapper">
               <div className="text-wrapper-2">About</div>
             </div>
-          </div>
+          </a>
           <div className="info-button">
             <div className="overlap-2">
               <div className="text-wrapper-3">Info</div>

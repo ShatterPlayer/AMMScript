@@ -11,11 +11,11 @@ export const AMMScript = () => {
     <div className="AMM-script">
       <div className="div">
         <div className="overlap">
-          <button className="home-button">
+          <a href="/" className="home-button">
             <div className="overlap-group">
               <div className="text-wrapper">Home</div>
             </div>
-          </button>
+          </a>
           <div className="about-button">
             <div className="div-wrapper">
               <div className="text-wrapper-2">About</div>

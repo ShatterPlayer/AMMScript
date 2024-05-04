@@ -1,11 +1,12 @@
 import React from 'react';
-import { AmmScript } from '../app/AMMScript.js'; 
-import '../app/style.css'; 
+import { AMMScript } from '../app/AMMScript.js'; 
+import '../app/AMMScript.css'; 
+import '../app/globals.css'
 
 const HomePage = () => {
   return (
     <div>
-      <AmmScript /> 
+      <AMMScript /> 
     </div>
   );
 };

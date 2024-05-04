@@ -1,7 +1,8 @@
 import React from "react";
-import "./style.css";
+import "./AMMScript.css";
+import '../app/globals.css'
 
-export const AmmScript = () => {
+export const AMMScript = () => {
   return (
     <div className="AMM-script">
       <div className="div">

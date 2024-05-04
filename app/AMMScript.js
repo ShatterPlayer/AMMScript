@@ -2,6 +2,10 @@ import React from "react";
 import "./AMMScript.css";
 import '../app/globals.css'
 
+function compile() {
+  console.log("Kompilacja w toku...");
+}
+
 export const AMMScript = () => {
   return (
     <div className="AMM-script">
@@ -33,11 +37,9 @@ export const AMMScript = () => {
               <div className="text-wrapper-4">Write your code below:</div>
             </div>
           </div>
-          <div className="compile-button">
-            <div className="overlap-5">
+          <button className="compile-button" onClick={compile}>
               <div className="text-wrapper-5">compile</div>
-            </div>
-          </div>
+          </button>
         </div>
         <div className="text-wrapper-6">© 2024 AMM Script</div>
         <div className="text-wrapper-7">AMM Script</div>

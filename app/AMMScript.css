@@ -199,20 +199,21 @@
   width: 392px;
 }
 
+
 .AMM-script .compile-button {
   height: 44px;
   left: 494px;
   position: absolute;
   top: 578px;
   width: 454px;
-}
-
-.AMM-script .overlap-5 {
   background-image: url(https://c.animaapp.com/a0hzXRiM/img/rectangle-5.svg);
   background-size: 100% 100%;
   height: 44px;
   position: relative;
   width: 452px;
+  border: none;
+  font-family: 'JetBrains Mono', monospace;
+
 }
 
 .AMM-script .text-wrapper-5 {

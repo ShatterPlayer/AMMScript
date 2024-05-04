@@ -2,7 +2,11 @@ set a = 1;
 set b = "test";
 set c = true;
 
-c += 12;
+c += 12 * 2;
+
+a = 2 + 2 * 2;
+
+b = a^(2+2*2);
 
 print "test";
 

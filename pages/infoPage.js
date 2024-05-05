@@ -18,8 +18,8 @@ export const infoPage = () => {
               <div className="text-wrapper-4">Informacje:</div>
               <div className="text-wrapper-8">
               <div className="text-wrapper-8">
-                <div>1. Github</div>
-                <div>2. Dokumentacja</div>
+                <div><a href="https://github.com/ShatterPlayer/AMMScript/tree/frontend">1. Github</a></div>
+                <div><a href="https://docs.google.com/document/d/1W0OV49uWg-NFeqA5ltok2HZM3oBkaiZ8swf_PwFoWq8/edit">2. Dokumentacja</a></div>
               </div>
               </div>
             </div>

@@ -119,7 +119,12 @@
   width: 452px;
   border: none;
   font-family: 'JetBrains Mono', monospace;
+}
 
+.compile-button:hover {
+  background: linear-gradient(135deg, #F8C58C, #FDE5CD);
+  border-color: #F8C58C;
+  border-radius: 10px;
 }
 
 .AMM-script .text-wrapper-5 {

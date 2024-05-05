@@ -24,6 +24,12 @@
   position: relative;
   width: 260px;
 }
+  
+.overlap-group:hover {
+  background: linear-gradient(135deg, #F8C58C, #FDE5CD);
+  border-color: #F8C58C;
+  border-radius: 20px;
+}
 
 .Navbar .text-wrapper {
   color: #ffffff;
@@ -53,6 +59,12 @@
   height: 45px;
   position: relative;
   width: 260px;
+}
+
+.div-wrapper:hover {
+    background: linear-gradient(135deg, #F8C58C, #FDE5CD);
+    border-color: #F8C58C;
+    border-radius: 20px;
 }
 
 .Navbar .text-wrapper-2 {
@@ -85,6 +97,12 @@
   width: 260px;
 }
 
+.overlap-2:hover {
+    background: linear-gradient(135deg, #F8C58C, #FDE5CD);
+    border-color: #F8C58C;
+    border-radius: 20px;
+}
+
 .Navbar .text-wrapper-3 {
   color: #ffffff;
   font-size: 25px;
@@ -97,3 +115,5 @@
   white-space: nowrap;
   width: 106px;
 }
+
+

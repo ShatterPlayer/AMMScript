@@ -16,11 +16,11 @@ export const Navbar = () => {
               <div className="text-wrapper-2">About</div>
             </div>
           </a>
-          <div className="info-button">
+          <a href="/infoPage" className="info-button">
             <div className="overlap-2">
               <div className="text-wrapper-3">Info</div>
             </div>
-          </div>
+          </a>
         </div>
     </div>
   );

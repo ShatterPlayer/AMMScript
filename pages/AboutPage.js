@@ -14,7 +14,6 @@ export const aboutPage = () => {
             <div className="overlap-4">
              <div className="rectangle"/>
               <div className="rectangle-2"/>
-              <div className="code-input"/>
               <img className="line" alt="Line" src="https://c.animaapp.com/a0hzXRiM/img/line-.svg" />
               <div className="text-wrapper-4">Główne założenia:</div>
               <div className="text-wrapper-8">
@@ -32,7 +31,7 @@ export const aboutPage = () => {
               </div>
             </div>
           </div>
-          <a href="#" class="more-info-button">
+          <a href="/infoPage" class="more-info-button">
               <div className="text-wrapper-5">Dowiedz się więcej</div>
           </a>
         </div>

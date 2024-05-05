@@ -25,7 +25,9 @@ tokens = (
     'MULTIPLY_EQUAL',
     'DIVIDE_EQUAL',
     'ASSIGN',
-    'ID'
+    'ID',
+    'MINUS_MINUS',
+    'PLUS_PLUS'
 )
 
 
@@ -50,7 +52,8 @@ t_PLUS_EQUAL = r'\+='
 t_MINUS_EQUAL = r'-='
 t_MULTIPLY_EQUAL = r'\*='
 t_DIVIDE_EQUAL = r'/='
-
+t_MINUS_MINUS = r'\-\-'
+t_PLUS_PLUS = r'\+\+'
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -60,7 +63,6 @@ def t_ID(t):
 reserved = {
     'print': 'PRINT'
 }
-
 
 # Ignorowane znaki (spacje)
 t_ignore = ' \t'

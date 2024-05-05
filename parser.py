@@ -90,6 +90,16 @@ def p_expression_number(p):
     'expression : NUMBER'
     p[0] = p[1]
 
+def p_expression_unary(p):
+    '''
+    expression : MINUS_MINUS expression
+               | PLUS_PLUS expression
+    '''
+    if p[1] == '--':
+        p[0] = p[2] - 1
+    elif p[1] == '++':
+        p[0] = p[2] + 1
+
 def p_expression_print(p):
     'expression : PRINT expression'
     print(p[2])

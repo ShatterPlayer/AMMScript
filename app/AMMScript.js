@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./AMMScript.css";
 import '../app/globals.css'
 import axios from "axios";
-
+import Navbar from "../components/Navbar";
 
 export const AMMScript = () => {
   const [code, setCode] = useState(""); 
@@ -24,23 +24,7 @@ export const AMMScript = () => {
   return (
     <div className="AMM-script">
       <div className="div">
-        <div className="overlap">
-          <a href="/" className="home-button">
-            <div className="overlap-group">
-              <div className="text-wrapper">Home</div>
-            </div>
-          </a>
-          <a href="/AboutPage" className="about-button">
-            <div className="div-wrapper">
-              <div className="text-wrapper-2">About</div>
-            </div>
-          </a>
-          <div className="info-button">
-            <div className="overlap-2">
-              <div className="text-wrapper-3">Info</div>
-            </div>
-          </div>
-        </div>
+        <Navbar/>
         <div className="overlap-3">
           <div className="background">
             <div className="overlap-4">

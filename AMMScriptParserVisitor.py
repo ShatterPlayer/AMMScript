@@ -1,13 +1,10 @@
 # Generated from AMMScriptParser.g4 by ANTLR 4.13.1
 from antlr4 import *
-if "." in __name__:
-    from antlr.AMMScriptParser import AMMScriptParser
-else:
-    from antlr.AMMScriptParser import AMMScriptParser
+from antlr.AMMScriptParser import AMMScriptParser
 
 # This class defines a complete generic visitor for a parse tree produced by AMMScriptParser.
 
-class AMMScriptParserVisitor(ParseTreeVisitor):
+class AMMScriptParserVisitor(ParseTreeVisitor):  
     def __init__(self):
         self.results = []
 
@@ -128,36 +125,91 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprTrue.
     def visitExprTrue(self, ctx:AMMScriptParser.ExprTrueContext):
-        print('visitExprTrue')
-        return self.visitChildren(ctx)
+        return True
 
     # Visit a parse tree produced by AMMScriptParser#exprFalse.
     def visitExprFalse(self, ctx:AMMScriptParser.ExprFalseContext):
-        return self.visitChildren(ctx)
+        return False
 
     # Visit a parse tree produced by AMMScriptParser#exprPlusMinus.
     def visitExprPlusMinus(self, ctx:AMMScriptParser.ExprPlusMinusContext):
-        return self.visitChildren(ctx)
+        left = self.visit(ctx.expr(0))
+        right = self.visit(ctx.expr(1))
+
+        if type(left) == str or type(right) == str:
+            raise Exception("Nie można wykonać operacji matematycznych na napisach")
+        
+        # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
+        from antlr.AMMScriptParser import AMMScriptParser
+
+        if ctx.op.type == AMMScriptParser.PLUS:
+            return left + right
+        elif ctx.op.type == AMMScriptParser.MINUS:
+            return left - right
 
 
     # Visit a parse tree produced by AMMScriptParser#exprAndOr.
     def visitExprAndOr(self, ctx:AMMScriptParser.ExprAndOrContext):
-        return self.visitChildren(ctx)
+        left = self.visit(ctx.expr(0))
+        right = self.visit(ctx.expr(1))
+
+        # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
+        from antlr.AMMScriptParser import AMMScriptParser
+
+        if ctx.op.type == AMMScriptParser.AND:
+            return left and right
+        elif ctx.op.type == AMMScriptParser.OR:
+            return left or right
 
 
     # Visit a parse tree produced by AMMScriptParser#exprMultDivMod.
     def visitExprMultDivMod(self, ctx:AMMScriptParser.ExprMultDivModContext):
+        left = self.visit(ctx.expr(0))
+        right = self.visit(ctx.expr(1))
+
+        if type(left) == str or type(right) == str:
+            raise Exception("Nie można wykonać operacji matematycznych na napisach")
+        
+        # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
+        from antlr.AMMScriptParser import AMMScriptParser
+        
+        if right == 0 and ctx.op.type == AMMScriptParser.DIVIDE:
+            raise Exception("Nie można dzielić przez 0")
+        
+        if ctx.op.type == AMMScriptParser.MULTIPLY:
+            return left * right
+        elif ctx.op.type == AMMScriptParser.DIVIDE:
+            return left / right
+        elif ctx.op.type == AMMScriptParser.MODULO:
+            return left % right
+
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by AMMScriptParser#exprComparison.
     def visitExprComparison(self, ctx:AMMScriptParser.ExprComparisonContext):
-        return self.visitChildren(ctx)
+        left = self.visit(ctx.expr(0))
+        right = self.visit(ctx.expr(1))
 
+        # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
+        from antlr.AMMScriptParser import AMMScriptParser
+
+        if ctx.op.type == AMMScriptParser.EQUAL_EQUAL:
+            return left == right
+        elif ctx.op.type == AMMScriptParser.NOT_EQUAL:
+            return left != right
+        elif ctx.op.type == AMMScriptParser.LESS:
+            return left < right
+        elif ctx.op.type == AMMScriptParser.LESS_EQUAL:
+            return left <= right
+        elif ctx.op.type == AMMScriptParser.GREATER:
+            return left > right
+        elif ctx.op.type == AMMScriptParser.GREATER_EQUAL:
+            return left >= right
 
     # Visit a parse tree produced by AMMScriptParser#exprString.
     def visitExprString(self, ctx:AMMScriptParser.ExprStringContext):
-        return self.visitChildren(ctx)
+        return ctx.STRING().getText()[1:-1]
 
 
     # Visit a parse tree produced by AMMScriptParser#exprId.
@@ -172,18 +224,27 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprPower.
     def visitExprPower(self, ctx:AMMScriptParser.ExprPowerContext):
-        return self.visitChildren(ctx)
+        left = self.visit(ctx.expr(0))
+        right = self.visit(ctx.expr(1))
+
+        if type(left) == str or type(right) == str:
+            raise Exception("Nie można wykonać operacji potęgowania na napisach")
+        
+        if left == 0 and right == 0:
+            raise Exception("Nie można podnieść 0 do potęgi 0")
+        
+        return left ** right
 
 
     # Visit a parse tree produced by AMMScriptParser#exprParenthesis.
     def visitExprParenthesis(self, ctx:AMMScriptParser.ExprParenthesisContext):
-        return self.visitChildren(ctx)
+        return self.visit(ctx.expr())
 
 
     # Visit a parse tree produced by AMMScriptParser#exprNumber.
     def visitExprNumber(self, ctx:AMMScriptParser.ExprNumberContext):
         print('visitExprNumber')
-        return ctx.NUMBER().getText()
+        return float(ctx.NUMBER().getText())
 
 
     # Visit a parse tree produced by AMMScriptParser#exprFunctionCall.

@@ -40,6 +40,9 @@ def interpret(code):
   try:
     visitor.visit(parser.program())
   except Exception as e:
-    return str(e)
+    print(e)
+    results = visitor.getResults()
+    results.append(str(e))
+    return results
 
   return visitor.getResults()

@@ -50,7 +50,7 @@ RPAREN: ')';
 LBRACE: '{';
 RBRACE: '}';
 // Stałe:
-NUMBER: [0-9]+;
+NUMBER: ('-')?[0-9]+ ('.' [0-9]+)?;
 STRING: '"' (~["\r\n])* '"';
 // Typy logiczne
 TRUE: 'true';

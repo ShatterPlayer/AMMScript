@@ -49,8 +49,6 @@ LPAREN: '(';
 RPAREN: ')';
 LBRACE: '{';
 RBRACE: '}';
-// Identyfikator:
-ID: [a-zA-Z_][a-zA-Z0-9_]*;
 // Stałe:
 NUMBER: [0-9]+;
 STRING: '"' (~["\r\n])* '"';
@@ -68,3 +66,6 @@ COMMENT: '#' ~[\r\n]* -> skip;
 COMMA: ',';
 SEMICOLON: ';';
 COLON: ':';
+
+// Identyfikator:
+ID: [a-zA-Z_][a-zA-Z0-9_]*;

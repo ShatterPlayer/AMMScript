@@ -128,6 +128,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprTrue.
     def visitExprTrue(self, ctx:AMMScriptParser.ExprTrueContext):
+        print('visitExprTrue')
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by AMMScriptParser#exprFalse.

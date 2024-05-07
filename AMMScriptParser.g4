@@ -134,12 +134,12 @@ expr:
 	) expr # exprComparison
 	| expr op=(AND | OR) expr # exprAndOr
 	| NUMBER # exprNumber
-	| ID # exprId
 	| STRING # exprString
 	| TRUE # exprTrue
 	| FALSE # exprFalse
 	| functionCall # exprFunctionCall
-	| unaryExpr # exprUnary;
+	| unaryExpr # exprUnary
+	| ID # exprId;
 
 unaryExpr:
 	ID PLUS_PLUS

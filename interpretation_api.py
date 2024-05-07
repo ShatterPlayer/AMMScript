@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from interpreter import interpret
+from AMMScript import interpret
 
 app = Flask(__name__)
 

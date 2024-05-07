@@ -1,18 +1,17 @@
 from antlr4 import *
 import sys
-from AMMScriptLexer import AMMScriptLexer
-from AMMScriptParser import AMMScriptParser
+from antlr.AMMScriptLexer import AMMScriptLexer
+from antlr.AMMScriptParser import AMMScriptParser
 from AMMScriptParserVisitor import AMMScriptParserVisitor
 
-args = sys.argv
-f = open(args[1], 'r')
-lexer = AMMScriptLexer(InputStream(f.read()))
+def interpret(code):
+  lexer = AMMScriptLexer(InputStream(code))
 
-stream = CommonTokenStream(lexer)
-parser = AMMScriptParser(stream)
+  stream = CommonTokenStream(lexer)
+  parser = AMMScriptParser(stream)
 
-visitor = AMMScriptParserVisitor()
+  visitor = AMMScriptParserVisitor()
 
-visitor.visit(parser.program()) 
+  visitor.visit(parser.program())
 
-f.close()
+  return visitor.getResults()

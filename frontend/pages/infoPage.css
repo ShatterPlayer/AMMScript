@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+.Info-page {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.Info-page .div {
+  background-color: #ffffff;
+  height: 1024px;
+  overflow: hidden;
+  position: relative;
+  width: 1440px;
+}
+
+.Info-page .overlap-3 {
+  height: 904px;
+  left: 0;
+  position: absolute;
+  top: 70px;
+  width: 1442px;
+}
+
+.Info-page .background {
+  height: 904px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 1442px;
+}
+
+
+.Info-page .overlap-4 {
+  background-image: url(https://c.animaapp.com/a0hzXRiM/img/sky-img.png);
+  background-position: 50% 50%;
+  background-size: cover;
+  height: 600px;
+  position: relative;
+  width: 1440px;
+}
+
+.Info-page .rectangle {
+  background-color: #f0f0f0ed;
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 360px;
+  left: 129px;
+  position: absolute;
+  top: 34px;
+  width: 1177px;
+}
+
+.Info-page .rectangle-2 {
+  background-color: #000000c4;
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px #00000040;  
+  height: 300px;
+  left: 180px;
+  position: absolute; 
+  font-size: 14px; 
+  width: 1073px;
+  top: 64px;
+}
+
+.Info-page .line {
+  height: 3px;
+  left: 181px;
+  object-fit: cover;
+  position: absolute;
+  top: 129px;
+  width: 1074px;
+}
+
+.Info-page .text-wrapper-4 {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 400;
+  left: 203px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 85px;
+  width: 392px;
+}
+
+.Info-page .text-wrapper-8 {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 400;
+  left: 110px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 80px;
+  width: 1000px;
+  font-size: medium;
+}
+
+.text-wrapper-8 div {
+  margin-bottom: 10px; 
+}
+
+.text-wrapper-8 a:hover {
+    background: linear-gradient(135deg, #F8C58C, #FDE5CD); 
+    border-radius: 10px;
+}
+
+.Info-page .text-wrapper-6 {
+  color: #89a0cb;
+  font-size: 15px;
+  font-weight: 400;
+  left: 642px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  top: 695px;
+  white-space: nowrap;
+  width: 161px;
+}
+
+.Info-page .text-wrapper-7 {
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(180deg, rgb(167, 175, 208) 0%, rgb(97, 139, 196) 100%);
+  background-clip: text;
+  color: transparent;
+  font-size: 35px;
+  font-weight: 400;
+  left: 42px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  text-align: center;
+  text-fill-color: transparent;
+  text-shadow: 0px 4px 4px #00000040;
+  top: 11px;
+  width: 215px;
+}
+
+

@@ -1,13 +1,18 @@
 # Generated from AMMScriptParser.g4 by ANTLR 4.13.1
 from antlr4 import *
 if "." in __name__:
-    from .AMMScriptParser import AMMScriptParser
+    from antlr.AMMScriptParser import AMMScriptParser
 else:
-    from AMMScriptParser import AMMScriptParser
+    from antlr.AMMScriptParser import AMMScriptParser
 
 # This class defines a complete generic visitor for a parse tree produced by AMMScriptParser.
 
 class AMMScriptParserVisitor(ParseTreeVisitor):
+    def __init__(self):
+        self.results = []
+
+    def getResults(self):
+        return self.results
 
     # Visit a parse tree produced by AMMScriptParser#program.
     def visitProgram(self, ctx:AMMScriptParser.ProgramContext):
@@ -46,7 +51,6 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#print.
     def visitPrint(self, ctx:AMMScriptParser.PrintContext):
-        print(ctx.children[1].getText())
         return self.visitChildren(ctx)
 
 

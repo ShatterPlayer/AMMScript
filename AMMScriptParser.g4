@@ -120,26 +120,26 @@ functionDeclaration:
 functionCall: ID LPAREN (expr (COMMA expr)*)? RPAREN;
 
 expr:
-	LPAREN expr RPAREN
-	| expr POWER expr
-	| expr (MULTIPLY | DIVIDE | MODULO) expr
-	| expr (PLUS | MINUS) expr
-	| expr (
+	LPAREN expr RPAREN # exprParenthesis
+	| expr POWER expr # exprPower
+	| expr op=(MULTIPLY | DIVIDE | MODULO) expr # exprMultDivMod
+	| expr op=(PLUS | MINUS) expr # exprPlusMinus
+	| expr op=(
 		EQUAL_EQUAL
 		| NOT_EQUAL
 		| LESS
 		| GREATER
 		| LESS_EQUAL
 		| GREATER_EQUAL
-	) expr
-	| expr (AND | OR) expr
-	| NUMBER
-	| ID
-	| STRING
-	| TRUE
-	| FALSE
-	| functionCall
-	| unaryExpr;
+	) expr # exprComparison
+	| expr op=(AND | OR) expr # exprAndOr
+	| NUMBER # exprNumber
+	| ID # exprId
+	| STRING # exprString
+	| TRUE # exprTrue
+	| FALSE # exprFalse
+	| functionCall # exprFunctionCall
+	| unaryExpr # exprUnary;
 
 unaryExpr:
 	ID PLUS_PLUS

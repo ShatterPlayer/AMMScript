@@ -22,7 +22,12 @@ Potem można wpisać program do konsoli i zakończyć CTRL + Z.
 
 Alternatywnie można uruchomić program z pliku:
 ```
-antlr4-parse AMMScriptLexer.g4 AMMScriptParser.g4 program -gui plik_z_programem.amm
+antlr4-parse AMMScriptLexer.g4 AMMScriptParser.g4 program -gui program.amm
+```
+
+### Generacja kodu źródłowego
+```
+antlr4 -Dlanguage=Python3 .\AMMScriptLexer.g4 .\AMMScriptParser.g4 -o .\antlr\ -no-listener -visitor
 ```
 
 ## Przykłady

@@ -1,4 +1,4 @@
-# Generated from AMMScriptParser.g4 by ANTLR 4.13.1
+# Generated from ./AMMScriptParser.g4 by ANTLR 4.13.1
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
@@ -360,14 +360,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_program
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterProgram" ):
-                listener.enterProgram(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitProgram" ):
-                listener.exitProgram(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitProgram" ):
                 return visitor.visitProgram(self)
@@ -453,14 +445,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_statement
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStatement" ):
-                listener.enterStatement(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStatement" ):
-                listener.exitStatement(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitStatement" ):
@@ -603,14 +587,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_statementInLoop
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStatementInLoop" ):
-                listener.enterStatementInLoop(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStatementInLoop" ):
-                listener.exitStatementInLoop(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitStatementInLoop" ):
@@ -756,14 +732,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_statementInFunction
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStatementInFunction" ):
-                listener.enterStatementInFunction(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStatementInFunction" ):
-                listener.exitStatementInFunction(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitStatementInFunction" ):
@@ -918,14 +886,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_statementInFunctionAndLoop
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStatementInFunctionAndLoop" ):
-                listener.enterStatementInFunctionAndLoop(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStatementInFunctionAndLoop" ):
-                listener.exitStatementInFunctionAndLoop(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitStatementInFunctionAndLoop" ):
                 return visitor.visitStatementInFunctionAndLoop(self)
@@ -1058,14 +1018,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_variableDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterVariableDeclaration" ):
-                listener.enterVariableDeclaration(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitVariableDeclaration" ):
-                listener.exitVariableDeclaration(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitVariableDeclaration" ):
                 return visitor.visitVariableDeclaration(self)
@@ -1137,14 +1089,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_variableAsignment
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterVariableAsignment" ):
-                listener.enterVariableAsignment(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitVariableAsignment" ):
-                listener.exitVariableAsignment(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitVariableAsignment" ):
                 return visitor.visitVariableAsignment(self)
@@ -1197,14 +1141,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_print
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPrint" ):
-                listener.enterPrint(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPrint" ):
-                listener.exitPrint(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitPrint" ):
@@ -1281,14 +1217,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_if
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIf" ):
-                listener.enterIf(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIf" ):
-                listener.exitIf(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitIf" ):
@@ -1432,14 +1360,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_ifInLoop
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIfInLoop" ):
-                listener.enterIfInLoop(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIfInLoop" ):
-                listener.exitIfInLoop(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitIfInLoop" ):
                 return visitor.visitIfInLoop(self)
@@ -1581,14 +1501,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_ifInFunction
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIfInFunction" ):
-                listener.enterIfInFunction(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIfInFunction" ):
-                listener.exitIfInFunction(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitIfInFunction" ):
@@ -1732,14 +1644,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_ifInFunctionAndLoop
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIfInFunctionAndLoop" ):
-                listener.enterIfInFunctionAndLoop(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIfInFunctionAndLoop" ):
-                listener.exitIfInFunctionAndLoop(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitIfInFunctionAndLoop" ):
                 return visitor.visitIfInFunctionAndLoop(self)
@@ -1852,14 +1756,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_loop
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterLoop" ):
-                listener.enterLoop(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitLoop" ):
-                listener.exitLoop(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitLoop" ):
                 return visitor.visitLoop(self)
@@ -1916,14 +1812,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_loopInFunction
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterLoopInFunction" ):
-                listener.enterLoopInFunction(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitLoopInFunction" ):
-                listener.exitLoopInFunction(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitLoopInFunction" ):
@@ -2007,14 +1895,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_forLoop
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterForLoop" ):
-                listener.enterForLoop(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitForLoop" ):
-                listener.exitForLoop(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitForLoop" ):
@@ -2111,14 +1991,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_forLoopInFunction
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterForLoopInFunction" ):
-                listener.enterForLoopInFunction(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitForLoopInFunction" ):
-                listener.exitForLoopInFunction(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitForLoopInFunction" ):
                 return visitor.visitForLoopInFunction(self)
@@ -2200,14 +2072,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_whileLoop
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterWhileLoop" ):
-                listener.enterWhileLoop(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitWhileLoop" ):
-                listener.exitWhileLoop(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitWhileLoop" ):
                 return visitor.visitWhileLoop(self)
@@ -2280,14 +2144,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_whileLoopInFunction
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterWhileLoopInFunction" ):
-                listener.enterWhileLoopInFunction(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitWhileLoopInFunction" ):
-                listener.exitWhileLoopInFunction(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitWhileLoopInFunction" ):
@@ -2391,14 +2247,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_switch
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSwitch" ):
-                listener.enterSwitch(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSwitch" ):
-                listener.exitSwitch(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitSwitch" ):
@@ -2557,14 +2405,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_switchInFunction
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSwitchInFunction" ):
-                listener.enterSwitchInFunction(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSwitchInFunction" ):
-                listener.exitSwitchInFunction(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitSwitchInFunction" ):
                 return visitor.visitSwitchInFunction(self)
@@ -2719,14 +2559,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_functionDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFunctionDeclaration" ):
-                listener.enterFunctionDeclaration(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFunctionDeclaration" ):
-                listener.exitFunctionDeclaration(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitFunctionDeclaration" ):
                 return visitor.visitFunctionDeclaration(self)
@@ -2846,14 +2678,6 @@ class AMMScriptParser ( Parser ):
         def getRuleIndex(self):
             return AMMScriptParser.RULE_functionCall
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFunctionCall" ):
-                listener.enterFunctionCall(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFunctionCall" ):
-                listener.exitFunctionCall(self)
-
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitFunctionCall" ):
                 return visitor.visitFunctionCall(self)
@@ -2912,8 +2736,21 @@ class AMMScriptParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def LPAREN(self):
-            return self.getToken(AMMScriptParser.LPAREN, 0)
+
+        def getRuleIndex(self):
+            return AMMScriptParser.RULE_expr
+
+     
+        def copyFrom(self, ctx:ParserRuleContext):
+            super().copyFrom(ctx)
+
+
+    class ExprPlusMinusContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.op = None # Token
+            self.copyFrom(ctx)
 
         def expr(self, i:int=None):
             if i is None:
@@ -2921,89 +2758,256 @@ class AMMScriptParser ( Parser ):
             else:
                 return self.getTypedRuleContext(AMMScriptParser.ExprContext,i)
 
+        def PLUS(self):
+            return self.getToken(AMMScriptParser.PLUS, 0)
+        def MINUS(self):
+            return self.getToken(AMMScriptParser.MINUS, 0)
 
-        def RPAREN(self):
-            return self.getToken(AMMScriptParser.RPAREN, 0)
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprPlusMinus" ):
+                return visitor.visitExprPlusMinus(self)
+            else:
+                return visitor.visitChildren(self)
 
-        def NUMBER(self):
-            return self.getToken(AMMScriptParser.NUMBER, 0)
 
-        def ID(self):
-            return self.getToken(AMMScriptParser.ID, 0)
+    class ExprMultDivModContext(ExprContext):
 
-        def STRING(self):
-            return self.getToken(AMMScriptParser.STRING, 0)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.op = None # Token
+            self.copyFrom(ctx)
 
-        def TRUE(self):
-            return self.getToken(AMMScriptParser.TRUE, 0)
+        def expr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(AMMScriptParser.ExprContext)
+            else:
+                return self.getTypedRuleContext(AMMScriptParser.ExprContext,i)
 
-        def FALSE(self):
-            return self.getToken(AMMScriptParser.FALSE, 0)
+        def MULTIPLY(self):
+            return self.getToken(AMMScriptParser.MULTIPLY, 0)
+        def DIVIDE(self):
+            return self.getToken(AMMScriptParser.DIVIDE, 0)
+        def MODULO(self):
+            return self.getToken(AMMScriptParser.MODULO, 0)
 
-        def functionCall(self):
-            return self.getTypedRuleContext(AMMScriptParser.FunctionCallContext,0)
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprMultDivMod" ):
+                return visitor.visitExprMultDivMod(self)
+            else:
+                return visitor.visitChildren(self)
 
+
+    class ExprComparisonContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.op = None # Token
+            self.copyFrom(ctx)
+
+        def expr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(AMMScriptParser.ExprContext)
+            else:
+                return self.getTypedRuleContext(AMMScriptParser.ExprContext,i)
+
+        def EQUAL_EQUAL(self):
+            return self.getToken(AMMScriptParser.EQUAL_EQUAL, 0)
+        def NOT_EQUAL(self):
+            return self.getToken(AMMScriptParser.NOT_EQUAL, 0)
+        def LESS(self):
+            return self.getToken(AMMScriptParser.LESS, 0)
+        def GREATER(self):
+            return self.getToken(AMMScriptParser.GREATER, 0)
+        def LESS_EQUAL(self):
+            return self.getToken(AMMScriptParser.LESS_EQUAL, 0)
+        def GREATER_EQUAL(self):
+            return self.getToken(AMMScriptParser.GREATER_EQUAL, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprComparison" ):
+                return visitor.visitExprComparison(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class ExprUnaryContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
 
         def unaryExpr(self):
             return self.getTypedRuleContext(AMMScriptParser.UnaryExprContext,0)
 
 
-        def POWER(self):
-            return self.getToken(AMMScriptParser.POWER, 0)
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprUnary" ):
+                return visitor.visitExprUnary(self)
+            else:
+                return visitor.visitChildren(self)
 
-        def MULTIPLY(self):
-            return self.getToken(AMMScriptParser.MULTIPLY, 0)
 
-        def DIVIDE(self):
-            return self.getToken(AMMScriptParser.DIVIDE, 0)
+    class ExprNumberContext(ExprContext):
 
-        def MODULO(self):
-            return self.getToken(AMMScriptParser.MODULO, 0)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
 
-        def PLUS(self):
-            return self.getToken(AMMScriptParser.PLUS, 0)
+        def NUMBER(self):
+            return self.getToken(AMMScriptParser.NUMBER, 0)
 
-        def MINUS(self):
-            return self.getToken(AMMScriptParser.MINUS, 0)
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprNumber" ):
+                return visitor.visitExprNumber(self)
+            else:
+                return visitor.visitChildren(self)
 
-        def EQUAL_EQUAL(self):
-            return self.getToken(AMMScriptParser.EQUAL_EQUAL, 0)
 
-        def NOT_EQUAL(self):
-            return self.getToken(AMMScriptParser.NOT_EQUAL, 0)
+    class ExprTrueContext(ExprContext):
 
-        def LESS(self):
-            return self.getToken(AMMScriptParser.LESS, 0)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
 
-        def GREATER(self):
-            return self.getToken(AMMScriptParser.GREATER, 0)
+        def TRUE(self):
+            return self.getToken(AMMScriptParser.TRUE, 0)
 
-        def LESS_EQUAL(self):
-            return self.getToken(AMMScriptParser.LESS_EQUAL, 0)
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprTrue" ):
+                return visitor.visitExprTrue(self)
+            else:
+                return visitor.visitChildren(self)
 
-        def GREATER_EQUAL(self):
-            return self.getToken(AMMScriptParser.GREATER_EQUAL, 0)
+
+    class ExprAndOrContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.op = None # Token
+            self.copyFrom(ctx)
+
+        def expr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(AMMScriptParser.ExprContext)
+            else:
+                return self.getTypedRuleContext(AMMScriptParser.ExprContext,i)
 
         def AND(self):
             return self.getToken(AMMScriptParser.AND, 0)
-
         def OR(self):
             return self.getToken(AMMScriptParser.OR, 0)
 
-        def getRuleIndex(self):
-            return AMMScriptParser.RULE_expr
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprAndOr" ):
+                return visitor.visitExprAndOr(self)
+            else:
+                return visitor.visitChildren(self)
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterExpr" ):
-                listener.enterExpr(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitExpr" ):
-                listener.exitExpr(self)
+    class ExprStringContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def STRING(self):
+            return self.getToken(AMMScriptParser.STRING, 0)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitExpr" ):
-                return visitor.visitExpr(self)
+            if hasattr( visitor, "visitExprString" ):
+                return visitor.visitExprString(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class ExprIdContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def ID(self):
+            return self.getToken(AMMScriptParser.ID, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprId" ):
+                return visitor.visitExprId(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class ExprFalseContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def FALSE(self):
+            return self.getToken(AMMScriptParser.FALSE, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprFalse" ):
+                return visitor.visitExprFalse(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class ExprPowerContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def expr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(AMMScriptParser.ExprContext)
+            else:
+                return self.getTypedRuleContext(AMMScriptParser.ExprContext,i)
+
+        def POWER(self):
+            return self.getToken(AMMScriptParser.POWER, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprPower" ):
+                return visitor.visitExprPower(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class ExprParenthesisContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def LPAREN(self):
+            return self.getToken(AMMScriptParser.LPAREN, 0)
+        def expr(self):
+            return self.getTypedRuleContext(AMMScriptParser.ExprContext,0)
+
+        def RPAREN(self):
+            return self.getToken(AMMScriptParser.RPAREN, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprParenthesis" ):
+                return visitor.visitExprParenthesis(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class ExprFunctionCallContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a AMMScriptParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def functionCall(self):
+            return self.getTypedRuleContext(AMMScriptParser.FunctionCallContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExprFunctionCall" ):
+                return visitor.visitExprFunctionCall(self)
             else:
                 return visitor.visitChildren(self)
 
@@ -3023,6 +3027,10 @@ class AMMScriptParser ( Parser ):
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,51,self._ctx)
             if la_ == 1:
+                localctx = AMMScriptParser.ExprParenthesisContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
+
                 self.state = 497
                 self.match(AMMScriptParser.LPAREN)
                 self.state = 498
@@ -3032,36 +3040,57 @@ class AMMScriptParser ( Parser ):
                 pass
 
             elif la_ == 2:
+                localctx = AMMScriptParser.ExprNumberContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
                 self.state = 501
                 self.match(AMMScriptParser.NUMBER)
                 pass
 
             elif la_ == 3:
+                localctx = AMMScriptParser.ExprIdContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
                 self.state = 502
                 self.match(AMMScriptParser.ID)
                 pass
 
             elif la_ == 4:
+                localctx = AMMScriptParser.ExprStringContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
                 self.state = 503
                 self.match(AMMScriptParser.STRING)
                 pass
 
             elif la_ == 5:
+                localctx = AMMScriptParser.ExprTrueContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
                 self.state = 504
                 self.match(AMMScriptParser.TRUE)
                 pass
 
             elif la_ == 6:
+                localctx = AMMScriptParser.ExprFalseContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
                 self.state = 505
                 self.match(AMMScriptParser.FALSE)
                 pass
 
             elif la_ == 7:
+                localctx = AMMScriptParser.ExprFunctionCallContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
                 self.state = 506
                 self.functionCall()
                 pass
 
             elif la_ == 8:
+                localctx = AMMScriptParser.ExprUnaryContext(self, localctx)
+                self._ctx = localctx
+                _prevctx = localctx
                 self.state = 507
                 self.unaryExpr()
                 pass
@@ -3080,7 +3109,7 @@ class AMMScriptParser ( Parser ):
                     self._errHandler.sync(self)
                     la_ = self._interp.adaptivePredict(self._input,52,self._ctx)
                     if la_ == 1:
-                        localctx = AMMScriptParser.ExprContext(self, _parentctx, _parentState)
+                        localctx = AMMScriptParser.ExprPowerContext(self, AMMScriptParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 510
                         if not self.precpred(self._ctx, 12):
@@ -3093,16 +3122,17 @@ class AMMScriptParser ( Parser ):
                         pass
 
                     elif la_ == 2:
-                        localctx = AMMScriptParser.ExprContext(self, _parentctx, _parentState)
+                        localctx = AMMScriptParser.ExprMultDivModContext(self, AMMScriptParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 513
                         if not self.precpred(self._ctx, 11):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 11)")
                         self.state = 514
+                        localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 2952790016) != 0)):
-                            self._errHandler.recoverInline(self)
+                            localctx.op = self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
@@ -3111,16 +3141,17 @@ class AMMScriptParser ( Parser ):
                         pass
 
                     elif la_ == 3:
-                        localctx = AMMScriptParser.ExprContext(self, _parentctx, _parentState)
+                        localctx = AMMScriptParser.ExprPlusMinusContext(self, AMMScriptParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 516
                         if not self.precpred(self._ctx, 10):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 10)")
                         self.state = 517
+                        localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not(_la==26 or _la==27):
-                            self._errHandler.recoverInline(self)
+                            localctx.op = self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
@@ -3129,16 +3160,17 @@ class AMMScriptParser ( Parser ):
                         pass
 
                     elif la_ == 4:
-                        localctx = AMMScriptParser.ExprContext(self, _parentctx, _parentState)
+                        localctx = AMMScriptParser.ExprComparisonContext(self, AMMScriptParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 519
                         if not self.precpred(self._ctx, 9):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 9)")
                         self.state = 520
+                        localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 2064384) != 0)):
-                            self._errHandler.recoverInline(self)
+                            localctx.op = self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
@@ -3147,16 +3179,17 @@ class AMMScriptParser ( Parser ):
                         pass
 
                     elif la_ == 5:
-                        localctx = AMMScriptParser.ExprContext(self, _parentctx, _parentState)
+                        localctx = AMMScriptParser.ExprAndOrContext(self, AMMScriptParser.ExprContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                         self.state = 522
                         if not self.precpred(self._ctx, 8):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 8)")
                         self.state = 523
+                        localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not(_la==43 or _la==44):
-                            self._errHandler.recoverInline(self)
+                            localctx.op = self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
@@ -3196,14 +3229,6 @@ class AMMScriptParser ( Parser ):
 
         def getRuleIndex(self):
             return AMMScriptParser.RULE_unaryExpr
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterUnaryExpr" ):
-                listener.enterUnaryExpr(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitUnaryExpr" ):
-                listener.exitUnaryExpr(self)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitUnaryExpr" ):

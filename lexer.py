@@ -27,7 +27,11 @@ tokens = (
     'ASSIGN',
     'ID',
     'MINUS_MINUS',
-    'PLUS_PLUS'
+    'PLUS_PLUS',
+    'IF',
+    'ELSE',
+    'LBRACE',
+    'RBRACE'
 )
 
 
@@ -54,6 +58,8 @@ t_MULTIPLY_EQUAL = r'\*='
 t_DIVIDE_EQUAL = r'/='
 t_MINUS_MINUS = r'\-\-'
 t_PLUS_PLUS = r'\+\+'
+t_LBRACE = r'\{'
+t_RBRACE = r'\}'
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'

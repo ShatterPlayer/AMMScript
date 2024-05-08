@@ -108,4 +108,23 @@ def p_expression_print(p):
 def p_error(p):
     print("Błąd składni!")
 
+def p_if_statement(p):
+    '''statement : IF expression LBRACE statements RBRACE
+                 | IF expression LBRACE statements RBRACE ELSE LBRACE statements RBRACE'''
+    if p[2]:  
+        p[0] = p[4]  
+    elif len(p) > 6:
+        p[0] = p[8]  
+
+def p_statements(p):
+    '''statements : statement
+                  | statements statement'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[2])
+        p[0] = p[1]
+
+
+
 parser = yacc.yacc()

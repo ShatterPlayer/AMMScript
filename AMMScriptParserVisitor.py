@@ -52,10 +52,27 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         self.results.append(self.visit(ctx.expr()))
         return
 
-
-    # Visit a parse tree produced by AMMScriptParser#if.
-    def visitIf(self, ctx:AMMScriptParser.IfContext):
-        return self.visitChildren(ctx)
+    def visitIf(self, ctx):
+        condition = self.visit(ctx.expr(0))
+        if condition:
+            if ctx.statement(0): 
+                for statement in ctx.statement(0).children:  
+                    self.visit(statement)
+        else:
+            handled = False
+            for i in range(1, len(ctx.expr())): 
+                if self.visit(ctx.expr(i)):
+                    if ctx.statement(i): 
+                        for statement in ctx.statement(i).children:
+                            self.visit(statement)
+                        handled = True
+                        break 
+            
+            if not handled:  
+                if len(ctx.statement()) > len(ctx.expr()): 
+                    if ctx.statement(len(ctx.expr())): 
+                        for statement in ctx.statement(len(ctx.expr())).children:
+                            self.visit(statement)
 
 
     # Visit a parse tree produced by AMMScriptParser#ifInLoop.

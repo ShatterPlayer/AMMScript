@@ -119,6 +119,11 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by AMMScriptParser#arrayExpr.
+    def visitArrayExpr(self, ctx:AMMScriptParser.ArrayExprContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by AMMScriptParser#exprPlusMinus.
     def visitExprPlusMinus(self, ctx:AMMScriptParser.ExprPlusMinusContext):
         return self.visitChildren(ctx)
@@ -176,6 +181,11 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprParenthesis.
     def visitExprParenthesis(self, ctx:AMMScriptParser.ExprParenthesisContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AMMScriptParser#exprArray.
+    def visitExprArray(self, ctx:AMMScriptParser.ExprArrayContext):
         return self.visitChildren(ctx)
 
 

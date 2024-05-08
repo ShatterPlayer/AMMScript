@@ -37,7 +37,6 @@ statementInFunction:
 	| ifInFunction
 	| loopInFunction
 	| RETURN expr SEMICOLON
-	| RETURN SEMICOLON
 	| switchInFunction;
 
 statementInFunctionAndLoop:
@@ -50,12 +49,11 @@ statementInFunctionAndLoop:
 	| loopInFunction
 	| BREAK
 	| CONTINUE
-	| RETURN expr SEMICOLON
-	| RETURN SEMICOLON;
+	| RETURN expr SEMICOLON;
 
-variableDeclaration: SET ID (EQUAL expr)?;
+variableDeclaration: SET ID ((EQUAL expr) | (LBRACKET NUMBER RBRACKET EQUAL LBRACKET (expr (COMMA expr)*)? RBRACKET));
 variableAsignment:
-	ID (
+	ID (LBRACKET NUMBER RBRACKET)? (
 		EQUAL
 		| PLUS_EQUAL
 		| MINUS_EQUAL
@@ -119,6 +117,8 @@ functionDeclaration:
 
 functionCall: ID LPAREN (expr (COMMA expr)*)? RPAREN;
 
+arrayExpr: ID LBRACKET NUMBER RBRACKET;
+
 expr:
 	LPAREN expr RPAREN # exprParenthesis
 	| expr POWER expr # exprPower
@@ -139,6 +139,7 @@ expr:
 	| FALSE # exprFalse
 	| functionCall # exprFunctionCall
 	| unaryExpr # exprUnary
+	| arrayExpr # exprArray
 	| ID # exprId;
 
 unaryExpr:

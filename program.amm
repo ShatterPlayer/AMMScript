@@ -2,6 +2,8 @@ set a = 1;
 set b = "test";
 set c = true;
 
+set c[5] = [1, 2, 3, 4, 5];
+
 c += 12 * 2;
 
 a = 2 + 2 * 2;
@@ -22,7 +24,7 @@ func test(a, b="test") {
   print a;
 
   if a > 12 {
-    return;
+    return true;
   } else if a == 10 {
     print "a jest rowne 10";
   } else {

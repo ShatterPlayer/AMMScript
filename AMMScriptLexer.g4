@@ -49,6 +49,8 @@ LPAREN: '(';
 RPAREN: ')';
 LBRACE: '{';
 RBRACE: '}';
+LBRACKET: '[';
+RBRACKET: ']';
 // Stałe:
 NUMBER: ('-')?[0-9]+ ('.' [0-9]+)?;
 STRING: '"' (~["\r\n])* '"';

@@ -239,6 +239,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by AMMScriptParser#exprParenthesis.
     def visitExprParenthesis(self, ctx:AMMScriptParser.ExprParenthesisContext):
         return self.visit(ctx.expr())
+    
+    # Visit a parse tree produced by AMMScriptParser#exprArray.
+    def visitExprArray(self, ctx:AMMScriptParser.ExprArrayContext):
+        return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by AMMScriptParser#exprNumber.
@@ -249,6 +253,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprFunctionCall.
     def visitExprFunctionCall(self, ctx:AMMScriptParser.ExprFunctionCallContext):
+        return self.visitChildren(ctx)
+    
+    # Visit a parse tree produced by AMMScriptParser#arrayExpr.
+    def visitArrayExpr(self, ctx:AMMScriptParser.ArrayExprContext):
         return self.visitChildren(ctx)
 
 

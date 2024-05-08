@@ -7,6 +7,7 @@ from antlr.AMMScriptParser import AMMScriptParser
 class AMMScriptParserVisitor(ParseTreeVisitor):  
     def __init__(self):
         self.results = []
+        self.variables = {}
 
     def getResults(self):
         return self.results
@@ -14,7 +15,6 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
    # Visit a parse tree produced by AMMScriptParser#program.
     def visitProgram(self, ctx:AMMScriptParser.ProgramContext):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by AMMScriptParser#statement.
     def visitStatement(self, ctx:AMMScriptParser.StatementContext):
@@ -38,18 +38,33 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#variableDeclaration.
     def visitVariableDeclaration(self, ctx:AMMScriptParser.VariableDeclarationContext):
-        return self.visitChildren(ctx)
+        print("visitVariableDeclaration")
+        variable_name = ctx.ID().getText()
+        print("variable_name:", variable_name)
+        value = self.visit(ctx.expr(0))
+        print("value:", value)
+        self.variables[variable_name] = value
+        return
 
 
     # Visit a parse tree produced by AMMScriptParser#variableAsignment.
     def visitVariableAsignment(self, ctx:AMMScriptParser.VariableAsignmentContext):
-        return self.visitChildren(ctx)
-
+        print('visitVariableAsignment')
+        variable_name = ctx.ID().getText()
+        value = self.visit(ctx.expr())
+        self.variables[variable_name] = value
+        return
 
     # Visit a parse tree produced by AMMScriptParser#print.
     def visitPrint(self, ctx:AMMScriptParser.PrintContext):
         print('visitPrint')
-        self.results.append(self.visit(ctx.expr()))
+        expr_value = self.visit(ctx.expr())
+        print("value: ", expr_value)
+
+        if expr_value in self.variables:
+            self.results.append(float(self.variables[expr_value]))
+        else:
+            self.results.append(expr_value)
         return
 
     def visitIf(self, ctx):
@@ -149,20 +164,30 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         return False
 
     # Visit a parse tree produced by AMMScriptParser#exprPlusMinus.
-    def visitExprPlusMinus(self, ctx:AMMScriptParser.ExprPlusMinusContext):
+    def visitExprPlusMinus(self, ctx: AMMScriptParser.ExprPlusMinusContext):
         left = self.visit(ctx.expr(0))
         right = self.visit(ctx.expr(1))
-
-        if type(left) == str or type(right) == str:
-            raise Exception("Nie można wykonać operacji matematycznych na napisach")
-        
-        # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
         from antlr.AMMScriptParser import AMMScriptParser
 
-        if ctx.op.type == AMMScriptParser.PLUS:
-            return left + right
-        elif ctx.op.type == AMMScriptParser.MINUS:
-            return left - right
+        if isinstance(left, str):
+            if left in self.variables and isinstance(self.variables[left], (int, float)):
+                left = self.variables[left]
+            else:
+                raise Exception(f"Zmienna {left} nie ma wartości liczbowej")
+
+        if isinstance(right, str):
+            if right in self.variables and isinstance(self.variables[right], (int, float)):
+                right = self.variables[right]
+            else:
+                raise Exception(f"Zmienna {right} nie ma wartości liczbowej")
+
+        if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+            if ctx.op.type == AMMScriptParser.PLUS:
+                return left + right
+            elif ctx.op.type == AMMScriptParser.MINUS:
+                return left - right
+        else:
+            raise Exception("Nie można wykonać operacji matematycznych na napisach")
 
 
     # Visit a parse tree produced by AMMScriptParser#exprAndOr.
@@ -231,7 +256,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprId.
     def visitExprId(self, ctx:AMMScriptParser.ExprIdContext):
-        return self.visitChildren(ctx)
+        return ctx.ID().getText()
 
 
     # Visit a parse tree produced by AMMScriptParser#exprUnary.
@@ -264,6 +289,12 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprNumber.
     def visitExprNumber(self, ctx:AMMScriptParser.ExprNumberContext):
+        print('visitExprNumber')
+        return float(ctx.NUMBER().getText())
+
+
+    # Visit a parse tree produced by AMMScriptParser#exprNumber.
+    def visitExprVariable(self, ctx:AMMScriptParser.ExprNumberContext):
         print('visitExprNumber')
         return float(ctx.NUMBER().getText())
 

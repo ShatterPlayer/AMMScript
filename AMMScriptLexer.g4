@@ -40,10 +40,6 @@ DIVIDE: '/';
 POWER: '^';
 MODULO: '%';
 
-// Operatory jednoargumentowe:
-MINUS_MINUS: '--';
-PLUS_PLUS: '++';
-
 // Nawiasy:
 LPAREN: '(';
 RPAREN: ')';

@@ -138,12 +138,5 @@ expr:
 	| TRUE # exprTrue
 	| FALSE # exprFalse
 	| functionCall # exprFunctionCall
-	| unaryExpr # exprUnary
 	| arrayExpr # exprArray
 	| ID # exprId;
-
-unaryExpr:
-	ID PLUS_PLUS
-	| ID MINUS_MINUS
-	| PLUS_PLUS ID
-	| MINUS_MINUS ID;

@@ -139,11 +139,6 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by AMMScriptParser#exprUnary.
-    def visitExprUnary(self, ctx:AMMScriptParser.ExprUnaryContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by AMMScriptParser#exprNumber.
     def visitExprNumber(self, ctx:AMMScriptParser.ExprNumberContext):
         return self.visitChildren(ctx)
@@ -191,11 +186,6 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprFunctionCall.
     def visitExprFunctionCall(self, ctx:AMMScriptParser.ExprFunctionCallContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by AMMScriptParser#unaryExpr.
-    def visitUnaryExpr(self, ctx:AMMScriptParser.UnaryExprContext):
         return self.visitChildren(ctx)
 
 

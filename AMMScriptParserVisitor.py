@@ -380,12 +380,6 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         if var_name in self.variables:
             return self.variables[var_name]
 
-
-    # Visit a parse tree produced by AMMScriptParser#exprUnary.
-    def visitExprUnary(self, ctx:AMMScriptParser.ExprUnaryContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by AMMScriptParser#exprPower.
     def visitExprPower(self, ctx:AMMScriptParser.ExprPowerContext):
         left = self.visit(ctx.expr(0))
@@ -429,9 +423,5 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     def visitArrayExpr(self, ctx:AMMScriptParser.ArrayExprContext):
         return self.visitChildren(ctx)
 
-
-    # Visit a parse tree produced by AMMScriptParser#unaryExpr.
-    def visitUnaryExpr(self, ctx:AMMScriptParser.UnaryExprContext):
-        return self.visitChildren(ctx)
 
 del AMMScriptParser

@@ -3,6 +3,11 @@ from antlr4 import *
 from antlr.AMMScriptParser import AMMScriptParser
 
 # This class defines a complete generic visitor for a parse tree produced by AMMScriptParser.
+class BreakException(Exception):
+    pass
+
+class ContinueException(Exception):
+    pass
 
 class AMMScriptParserVisitor(ParseTreeVisitor):  
     def __init__(self):
@@ -92,7 +97,27 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#ifInLoop.
     def visitIfInLoop(self, ctx:AMMScriptParser.IfInLoopContext):
-        return self.visitChildren(ctx)
+        condition = self.visit(ctx.expr(0))
+        if condition:
+            if ctx.statementInLoop(0): 
+                for statement in ctx.statementInLoop(0).children:  
+                    self.visit(statement)
+        else:
+            handled = False
+            for i in range(1, len(ctx.expr())): 
+                if self.visit(ctx.expr(i)):
+                    if ctx.statementInLoop(i): 
+                        for statement in ctx.statementInLoop(i).children:
+                            self.visit(statement)
+                        handled = True
+                        break 
+            
+            if not handled:  
+                if len(ctx.statementInLoop()) > len(ctx.expr()): 
+                    if ctx.statementInLoop(len(ctx.expr())): 
+                        for statement in ctx.statementInLoop(len(ctx.expr())).children:
+                            self.visit(statement)
+
 
 
     # Visit a parse tree produced by AMMScriptParser#ifInFunction.
@@ -107,7 +132,13 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#loop.
     def visitLoop(self, ctx:AMMScriptParser.LoopContext):
-        return self.visitChildren(ctx)
+        print('visitLoop')
+        if ctx.forLoop():
+            return self.visitForLoop(ctx.forLoop())
+        elif ctx.whileLoop():
+            return self.visitWhileLoop(ctx.whileLoop())
+        else:
+            raise Exception("Nieznany typ pętli w kontekście LoopContext")
 
 
     # Visit a parse tree produced by AMMScriptParser#loopInFunction.
@@ -117,7 +148,23 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#forLoop.
     def visitForLoop(self, ctx:AMMScriptParser.ForLoopContext):
-        return self.visitChildren(ctx)
+        print('visitForLoop')
+        self.visit(ctx.variableDeclaration())  
+        while True:
+            condition_result = self.visit(ctx.expr())
+            if isinstance(condition_result, str):
+                condition_result = float(condition_result) if condition_result.isdigit() else condition_result
+            if not condition_result:
+                break
+            try:
+                for statement in ctx.statementInLoop():
+                    self.visit(statement)
+                self.visit(ctx.variableAsignment())
+            except BreakException:
+                break
+            except ContinueException:
+                continue
+
 
 
     # Visit a parse tree produced by AMMScriptParser#forLoopInFunction.
@@ -127,7 +174,20 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#whileLoop.
     def visitWhileLoop(self, ctx:AMMScriptParser.WhileLoopContext):
-        return self.visitChildren(ctx)
+        while True:
+        
+            condition = self.visit(ctx.expr())
+            if not condition:
+                break  
+            try:
+             
+                for statement in ctx.statementInLoop():
+                    self.visit(statement)
+            except BreakException:
+                break  
+            except ContinueException:
+                continue 
+        return None 
 
 
     # Visit a parse tree produced by AMMScriptParser#whileLoopInFunction.
@@ -233,6 +293,12 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         left = self.visit(ctx.expr(0))
         right = self.visit(ctx.expr(1))
 
+        if isinstance(left, str):
+            left = float(left) if left.isdigit() else left
+        if isinstance(right, str):
+            right = float(right) if right.isdigit() else right
+
+
         # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
         from antlr.AMMScriptParser import AMMScriptParser
 
@@ -256,7 +322,9 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprId.
     def visitExprId(self, ctx:AMMScriptParser.ExprIdContext):
-        return ctx.ID().getText()
+        var_name = ctx.ID().getText()
+        if var_name in self.variables:
+            return self.variables[var_name]
 
 
     # Visit a parse tree produced by AMMScriptParser#exprUnary.

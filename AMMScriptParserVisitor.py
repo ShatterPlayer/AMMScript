@@ -8,6 +8,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     def __init__(self):
         self.results = []
         self.variables = {}
+        self.functions = {}
 
     def getResults(self):
         return self.results
@@ -173,13 +174,13 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
             if left in self.variables and isinstance(self.variables[left], (int, float)):
                 left = self.variables[left]
             else:
-                raise Exception(f"Zmienna {left} nie ma wartości liczbowej")
+                raise Exception(f"Wyrażenie {left} nie ma wartości liczbowej")
 
         if isinstance(right, str):
             if right in self.variables and isinstance(self.variables[right], (int, float)):
                 right = self.variables[right]
             else:
-                raise Exception(f"Zmienna {right} nie ma wartości liczbowej")
+                raise Exception(f"Wyrażenie {right} nie ma wartości liczbowej")
 
         if isinstance(left, (int, float)) and isinstance(right, (int, float)):
             if ctx.op.type == AMMScriptParser.PLUS:

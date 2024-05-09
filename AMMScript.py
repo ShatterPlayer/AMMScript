@@ -35,7 +35,7 @@ def interpret(code):
   parser.removeErrorListeners()
   parser.addErrorListener(MyErrorListener())
 
-  visitor = AMMScriptParserVisitor()
+  visitor = AMMScriptParserVisitor(parser)
 
   try:
     visitor.visit(parser.program())

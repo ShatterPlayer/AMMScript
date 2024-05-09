@@ -270,15 +270,25 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         left = self.visit(ctx.expr(0))
         right = self.visit(ctx.expr(1))
 
-        if type(left) == str or type(right) == str:
-            raise Exception("Nie można wykonać operacji matematycznych na napisach")
-        
         # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
         from antlr.AMMScriptParser import AMMScriptParser
-        
-        if right == 0 and ctx.op.type == AMMScriptParser.DIVIDE:
-            raise Exception("Nie można dzielić przez 0")
-        
+
+        if isinstance(left, str):
+            if left in self.variables and isinstance(self.variables[left], (int, float)):
+                left = self.variables[left]
+            else:
+                raise Exception(f"Wyrażenie {left} nie ma wartości liczbowej")
+
+        if isinstance(right, str):
+            if right in self.variables and isinstance(self.variables[right], (int, float)):
+                right = self.variables[right]
+            else:
+                raise Exception(f"Wyrażenie {right} nie ma wartości liczbowej")
+
+        if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+            if right == 0 and ctx.op.type == AMMScriptParser.DIVIDE:
+                raise Exception("Nie można dzielić przez 0")
+
         if ctx.op.type == AMMScriptParser.MULTIPLY:
             return left * right
         elif ctx.op.type == AMMScriptParser.DIVIDE:

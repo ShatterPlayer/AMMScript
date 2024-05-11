@@ -30,6 +30,22 @@ antlr4-parse AMMScriptLexer.g4 AMMScriptParser.g4 program -gui program.amm
 antlr4 -Dlanguage=Python3 .\AMMScriptLexer.g4 .\AMMScriptParser.g4 -o .\antlr\ -no-listener -visitor
 ```
 
+### Uruchomienie aplikacji webowej
+
+Należy pamiętać o uruchomieniu:
+```
+python interpretation_api.py ammscript.py
+```
+
+Kolejnym krokiem jest wpisanie w terminalu:
+```
+npm run dev
+```
+Pojawi się wtedy link http://localhost:3000, jeśli się go kliknie będzie widać poniższą stronę:
+(podgląd)
+![image](https://github.com/ShatterPlayer/AMMScript/assets/115782747/84b32b6c-4705-4efa-9940-20d6c96fad95)
+![image](https://github.com/ShatterPlayer/AMMScript/assets/115782747/bd7341ac-c887-4d6c-ab61-9fc73e063542)
+
 ## Przykłady
 Przykładowy program w języku AMMScript znajduje się w pliku `program.amm` (nie ma on sensu z logicznego punktu widzenia, służy tylko do prezentacji struktur dostępnych w języku).
 

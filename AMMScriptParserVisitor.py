@@ -12,6 +12,11 @@ class BreakException(Exception):
 class ContinueException(Exception):
     pass
 
+class ReturnException(Exception):
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
+
 
 class AMMScriptParserVisitor(ParseTreeVisitor):
     def __init__(self, parser):
@@ -38,7 +43,18 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#statementInFunction.
     def visitStatementInFunction(self, ctx: AMMScriptParser.StatementInFunctionContext):
-        return self.visitChildren(ctx)
+        from antlr.AMMScriptParser import AMMScriptParser
+       
+        for child in ctx.children:
+            if isinstance(child, antlr4.tree.Tree.TerminalNode):
+                if child.symbol.type == AMMScriptParser.RETURN:
+                    expr_index = ctx.children.index(child) + 1
+                    if expr_index < len(ctx.children):
+                        expr_value = self.visit(ctx.children[expr_index])
+                        raise ReturnException(expr_value)  
+            else:
+                self.visit(child)
+
 
     # Visit a parse tree produced by AMMScriptParser#statementInFunctionAndLoop.
     def visitStatementInFunctionAndLoop(self, ctx: AMMScriptParser.StatementInFunctionAndLoopContext):
@@ -275,7 +291,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by AMMScriptParser#switchInFunction.
     def visitSwitchInFunction(self, ctx: AMMScriptParser.SwitchInFunctionContext):
         return self.visitChildren(ctx)
-
+    """
     def visitFunctionDeclaration(self, ctx: AMMScriptParser.FunctionDeclarationContext):
         from antlr.AMMScriptParser import AMMScriptParser
         print("visitFunctionDeclaration")
@@ -306,8 +322,82 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         self.functions[function_name] = (parametersList, function_block)
 
         print(self.functions.items())
+    """
+    def visitFunctionDeclaration(self, ctx: AMMScriptParser.FunctionDeclarationContext):
+        from antlr.AMMScriptParser import AMMScriptParser
+        print("visitFunctionDeclaration")
+        func_name = ctx.ID(0).getText() 
+        print(f"funkcja: {func_name}")
+        
+        parameters = {}
+        params_ctx = ctx.children[ctx.children.index(ctx.LPAREN()) + 1:ctx.children.index(ctx.RPAREN())]
+        i = 0
+        while i < len(params_ctx):
+            if isinstance(params_ctx[i], antlr4.tree.Tree.TerminalNode) and params_ctx[i].symbol.type == AMMScriptParser.ID:
+                param_name = params_ctx[i].getText()
+    
+                if i + 1 < len(params_ctx) and params_ctx[i + 1].getText() == '=':
+                    default_value = self.visit(params_ctx[i + 2]) 
+                    parameters[param_name] = default_value
+                    i += 3  
+                else:
+                    parameters[param_name] = None
+                    i += 1
+            else:
+                i += 1  
+
+        body = []
+        body_ctx = ctx.children[ctx.children.index(ctx.LBRACE()) + 1:ctx.children.index(ctx.RBRACE())]
+        for statement in body_ctx:
+            if not isinstance(statement, antlr4.tree.Tree.TerminalNode):  
+                body.append(statement)
+
+        
+        self.functions[func_name] = {
+            'parameters': parameters,
+            'body': body
+        }
+        print(f"Funkcja: {func_name} , parametry: {parameters}")
 
 
+    
+    
+    def visitFunctionCall(self, ctx: AMMScriptParser.FunctionCallContext):
+        from antlr.AMMScriptParser import AMMScriptParser
+        func_name = ctx.ID().getText()  
+        if func_name not in self.functions:
+            raise Exception(f"Nie zdefiniowano funkcji '{func_name}'.")  
+        
+        func_info = self.functions[func_name]
+        parameters = func_info['parameters']  
+        body = func_info['body']  
+
+        
+        passed_arguments = [self.visit(arg) for arg in ctx.expr()]  
+        if len(passed_arguments) != len(parameters):
+            print(passed_arguments)
+            print(parameters)
+            raise Exception("Nie zgadza się liczba parametrów")
+
+        
+        local_scope = dict(zip(parameters, passed_arguments))
+        old_variables = self.variables.copy()
+        self.variables.update(local_scope)
+        return_value = None
+
+        try:
+            for statement in body:
+                self.visit(statement)
+        except ReturnException as e:
+            return_value = e.value 
+        finally:
+            self.variables = old_variables
+
+        return return_value
+
+
+
+    """
     # Visit a parse tree produced by AMMScriptParser#functionCall.
     def visitFunctionCall(self, ctx: AMMScriptParser.FunctionCallContext):
         from antlr.AMMScriptParser import AMMScriptParser
@@ -359,7 +449,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         ret = self.visit(tree)
 
         return ret
-
+    """
     # Visit a parse tree produced by AMMScriptParser#exprTrue.
     def visitExprTrue(self, ctx: AMMScriptParser.ExprTrueContext):
         return True
@@ -500,7 +590,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprNumber.
     def visitExprNumber(self, ctx: AMMScriptParser.ExprNumberContext):
+        from antlr.AMMScriptParser import AMMScriptParser
         print('visitExprNumber')
+        num_val = float(ctx.NUMBER().getText())
+        print(f"Widzę liczbę {num_val}")
         return float(ctx.NUMBER().getText())
 
     # Visit a parse tree produced by AMMScriptParser#exprNumber.
@@ -510,20 +603,15 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprFunctionCall.
     def visitExprFunctionCall(self, ctx: AMMScriptParser.ExprFunctionCallContext):
-        import re
         from antlr.AMMScriptParser import AMMScriptParser
-
         print("visitExprFunctionCall")
-        print(ctx.functionCall().getText())
-        function_name = ctx.functionCall().getText()
-        function_name = (re.search(r'^.*?(?=\()', function_name)).group()
+        func_name = ctx.ID().getText()
+        if func_name not in self.functions:
+            raise Exception(f"Nie zdefiniowano '{func_name}' ")
 
-        if function_name in self.functions:
-            function_block = self.functions[function_name][1]
-            print("function_block: ", function_block)
-            return self.visit(ctx.functionCall())
-        else:
-            raise Exception(f"Funkcja '{function_name}' nie jest zdefiniowana")
+        return None
+
+
 
     # Visit a parse tree produced by AMMScriptParser#arrayExpr.
     def visitArrayExpr(self, ctx: AMMScriptParser.ArrayExprContext):

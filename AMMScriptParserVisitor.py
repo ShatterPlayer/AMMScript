@@ -602,14 +602,56 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         return float(ctx.NUMBER().getText())
 
     # Visit a parse tree produced by AMMScriptParser#exprFunctionCall.
-    def visitExprFunctionCall(self, ctx: AMMScriptParser.ExprFunctionCallContext):
-        from antlr.AMMScriptParser import AMMScriptParser
+    def visitExprFunctionCall(self, ctx):
         print("visitExprFunctionCall")
-        func_name = ctx.ID().getText()
-        if func_name not in self.functions:
-            raise Exception(f"Nie zdefiniowano '{func_name}' ")
+        func_call_text = ctx.getText()  
 
-        return None
+        import re
+        match = re.match(r"(\w+)\((.*)\)", func_call_text)
+        if not match:
+            raise Exception("zły format")
+
+        func_name = match.group(1)
+        argument_text = match.group(2)  
+
+        if func_name not in self.functions:
+            raise Exception(f"Nie zdefiniowano funkcji: '{func_name}'")
+
+        func_info = self.functions[func_name]
+        parameters = func_info['parameters']
+        body = func_info['body']
+
+        
+        passed_arguments = []
+        if argument_text:
+            arguments = argument_text.split(',')
+            for arg in arguments:
+                if arg.strip():
+                    
+                    passed_arguments.append(eval(arg.strip())) 
+
+        if len(passed_arguments) != len(parameters):
+            raise Exception("Nieprawidłowa liczba parametrów")
+
+        
+        local_scope = dict(zip(parameters, passed_arguments))
+        old_variables = self.variables.copy()
+        self.variables.update(local_scope)
+
+        return_value = None
+        try:
+            for statement in body:
+                self.visit(statement)
+        except ReturnException as e:
+            return_value = e.value
+        finally:
+            self.variables = old_variables
+
+        return return_value
+
+
+
+
 
 
 

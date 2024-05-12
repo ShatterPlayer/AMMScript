@@ -58,7 +58,26 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#statementInFunctionAndLoop.
     def visitStatementInFunctionAndLoop(self, ctx: AMMScriptParser.StatementInFunctionAndLoopContext):
-        return self.visitChildren(ctx)
+        from antlr.AMMScriptParser import AMMScriptParser
+
+        for child in ctx.children:
+            if isinstance(child, antlr4.tree.Tree.TerminalNode):
+                token_type = child.symbol.type
+                if token_type == AMMScriptParser.RETURN:
+                    expr_index = ctx.children.index(child) + 1
+                    if expr_index < len(ctx.children):
+                        expr_value = self.visit(ctx.children[expr_index])
+                        raise ReturnException(expr_value)
+                elif token_type == AMMScriptParser.BREAK:
+                    raise BreakException()
+                elif token_type == AMMScriptParser.CONTINUE:
+                    raise ContinueException()
+            else:
+                try:
+                    self.visit(child)
+                except (BreakException, ContinueException, ReturnException) as e:
+                    raise e
+
 
     # Visit a parse tree produced by AMMScriptParser#variableDeclaration.
     def visitVariableDeclaration(self, ctx: AMMScriptParser.VariableDeclarationContext):
@@ -179,11 +198,101 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#ifInFunction.
     def visitIfInFunction(self, ctx: AMMScriptParser.IfInFunctionContext):
-        return self.visitChildren(ctx)
+        print("visitIfInLoop")
+        executed = False
+        i = 0
+        while i < len(ctx.children):
+            child = ctx.children[i]
+            if isinstance(child, antlr4.tree.Tree.TerminalNode):
+                token_type = child.getSymbol().type
+                if token_type == self.parser.IF or (
+                        token_type == self.parser.ELSE and i + 1 < len(ctx.children) and ctx.children[i + 1].getSymbol().type == self.parser.IF):
+
+                    if executed:
+                        i += 1
+                        continue
+
+                    condition_expr = self.visit(ctx.children[i + 1])
+                    if condition_expr:
+                        executed = True
+
+                        j = i + 3
+                        try:
+                            while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
+                                self.visitStatementInFunction(ctx.children[j])
+                                j += 1
+                        except ReturnException:
+                            raise
+                        break
+                elif token_type == self.parser.ELSE:
+                    if executed:
+                        i += 1
+                        continue
+
+                    j = i + 2
+                    try:
+                        while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
+                            self.visitStatementInLoop(ctx.children[j])
+                            j += 1
+                    except BreakException:
+                        raise
+                    except ContinueException:
+                        raise
+                    break
+            i += 1
+
+        return None
 
     # Visit a parse tree produced by AMMScriptParser#ifInFunctionAndLoop.
     def visitIfInFunctionAndLoop(self, ctx: AMMScriptParser.IfInFunctionAndLoopContext):
-        return self.visitChildren(ctx)
+        print("visitIfInLoop")
+        executed = False
+        i = 0
+        while i < len(ctx.children):
+            child = ctx.children[i]
+            if isinstance(child, antlr4.tree.Tree.TerminalNode):
+                token_type = child.getSymbol().type
+                if token_type == self.parser.IF or (
+                        token_type == self.parser.ELSE and i + 1 < len(ctx.children) and ctx.children[i + 1].getSymbol().type == self.parser.IF):
+
+                    if executed:
+                        i += 1
+                        continue
+
+                    condition_expr = self.visit(ctx.children[i + 1])
+                    if condition_expr:
+                        executed = True
+
+                        j = i + 3
+                        try:
+                            while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
+                                self.visitStatementInFunctionAndLoop(ctx.children[j])
+                                j += 1
+                        except BreakException:
+                            raise
+                        except ContinueException:
+                            raise
+                        except ReturnException:
+                            raise
+                        break
+                elif token_type == self.parser.ELSE:
+                    if executed:
+                        i += 1
+                        continue
+
+                    j = i + 2
+                    try:
+                        while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
+                            self.visitStatementInFunctionAndLoop(ctx.children[j])
+                            j += 1
+                    except BreakException:
+                        raise
+                    except ContinueException:
+                        raise
+                    break
+            i += 1
+
+        return None
 
     # Visit a parse tree produced by AMMScriptParser#loop.
     def visitLoop(self, ctx: AMMScriptParser.LoopContext):
@@ -197,7 +306,13 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#loopInFunction.
     def visitLoopInFunction(self, ctx: AMMScriptParser.LoopInFunctionContext):
-        return self.visitChildren(ctx)
+        print('visitLoopInFunction')
+        if ctx.forLoopInFunction():
+            return self.visitForLoopInFunction(ctx.forLoopInFunction())
+        elif ctx.whileLoopInFunction():
+            return self.visitWhileLoopInFunction(ctx.whileLoopInFunction())
+        else:
+            raise Exception("Nieznany typ pętli w kontekście LoopContext")
 
     # Visit a parse tree produced by AMMScriptParser#forLoop.
     def visitForLoop(self, ctx: AMMScriptParser.ForLoopContext):
@@ -220,7 +335,24 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#forLoopInFunction.
     def visitForLoopInFunction(self, ctx: AMMScriptParser.ForLoopInFunctionContext):
-        return self.visitChildren(ctx)
+        print('visitForLoopInFunction')
+        self.visit(ctx.variableDeclaration())
+        while True:
+            condition_result = self.visit(ctx.expr())
+            if isinstance(condition_result, str):
+                condition_result = float(condition_result) if condition_result.isdigit() else condition_result
+            if not condition_result:
+                break
+            try:
+                for statement in ctx.statementInFunctionAndLoop():
+                    self.visit(statement)
+                self.visit(ctx.variableAsignment())
+            except ReturnException:
+                raise
+            except BreakException:
+                break
+            except ContinueException:
+                continue
 
     # Visit a parse tree produced by AMMScriptParser#whileLoop.
     def visitWhileLoop(self, ctx: AMMScriptParser.WhileLoopContext):
@@ -243,7 +375,23 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         # Visit a parse tree produced by AMMScriptParser#whileLoopInFunction.
 
     def visitWhileLoopInFunction(self, ctx: AMMScriptParser.WhileLoopInFunctionContext):
-        return self.visitChildren(ctx)
+        print("visitWhileLoopInFunction")
+        while True:
+
+            condition = self.visit(ctx.expr())
+            if not condition:
+                break
+            try:
+
+                for statement in ctx.statementInFunctionAndLoop():
+                    self.visit(statement)
+            except ReturnException:
+                raise
+            except BreakException:
+                break
+            except ContinueException:
+                continue
+        return None
 
     # Visit a parse tree produced by AMMScriptParser#switch.
     def visitSwitch(self, ctx:AMMScriptParser.SwitchContext):
@@ -290,7 +438,48 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#switchInFunction.
     def visitSwitchInFunction(self, ctx: AMMScriptParser.SwitchInFunctionContext):
-        return self.visitChildren(ctx)
+        print("visitSwitchInFunction")
+        switch_value = self.visit(ctx.expr(0))
+
+        executed = False
+        default_statements = None
+
+        i = 2  
+        while i < len(ctx.children) - 1: 
+            child = ctx.children[i]
+            if isinstance(child, antlr4.tree.Tree.TerminalNode):
+                token_type = child.getSymbol().type
+                if token_type == self.parser.CASE:
+                    case_expr = self.visit(ctx.children[i+1])
+                    if switch_value == case_expr or executed:
+                        executed = True  
+                        j = i + 3 
+                        while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
+                            try:
+                                self.visit(ctx.children[j])
+                                j += 1
+                            except ReturnException:
+                                raise
+                        if j < len(ctx.children) and isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode) and ctx.children[j].getSymbol().type == self.parser.BREAK:
+                            break
+                        i = j  
+                        continue  
+                    i += 1  
+                elif token_type == self.parser.DEFAULT:
+                    default_statements = ctx.children[i+2:]
+                    i += 1  
+                else:
+                    i += 1  
+            else:
+                i += 1  
+
+        if not executed and default_statements:
+            for stmt in default_statements:
+                if isinstance(stmt, antlr4.tree.Tree.TerminalNode) and stmt.getText() == '}':
+                    break
+                self.visit(stmt)
+
+        return None
     """
     def visitFunctionDeclaration(self, ctx: AMMScriptParser.FunctionDeclarationContext):
         from antlr.AMMScriptParser import AMMScriptParser

@@ -4,7 +4,7 @@ from antlr.AMMScriptLexer import AMMScriptLexer
 from antlr.AMMScriptParser import AMMScriptParser
 from antlr4.error.ErrorListener import ErrorListener
 from AMMScriptParserVisitor import AMMScriptParserVisitor
-
+"""
 class MyErrorListener( ErrorListener ):
 
     def __init__(self):
@@ -24,7 +24,7 @@ class MyErrorListener( ErrorListener ):
 
     def reportContextSensitivity(self, recognizer, dfa, startIndex, stopIndex, prediction, configs):
         self.defaultError(startIndex, stopIndex, "Context sensitivity")
-
+"""
 def interpret(code):
   
   lexer = AMMScriptLexer(InputStream(code))
@@ -33,7 +33,7 @@ def interpret(code):
   parser = AMMScriptParser(stream)
   
   parser.removeErrorListeners()
-  parser.addErrorListener(MyErrorListener())
+  #parser.addErrorListener(MyErrorListener())
 
   visitor = AMMScriptParserVisitor(parser)
 

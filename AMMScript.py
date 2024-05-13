@@ -10,11 +10,8 @@ class MyErrorListener( ErrorListener ):
     def __init__(self):
         super(MyErrorListener, self).__init__()
 
-    def defaultError(self, line, column, msg):
-        raise Exception("Błąd w linii " + str(line) + " w kolumnie " + str(column) + "( " + msg + " )")
-
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
-        self.defaultError(line, column, msg)
+        raise Exception("Błąd składniowy w linii " + str(line) + " w kolumnie " + str(column))
 '''
     def reportAmbiguity(self, recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs):
         self.defaultError(startIndex, stopIndex, "Ambiguity")

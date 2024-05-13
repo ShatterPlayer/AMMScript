@@ -23,7 +23,6 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         self.results = []
         self.variables = {}
         self.functions = {}
-        self.keywords = {}
         self.parser = parser
 
     def getResults(self):
@@ -84,6 +83,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         print("visitVariableDeclaration")
         variable_name = ctx.ID().getText()
         print("variable_name:", variable_name)
+
         if ctx.LBRACKET(0) != None:
             # Array
             arraySize = ctx.NUMBER().getText()
@@ -677,6 +677,9 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         left = self.visit(ctx.expr(0))
         right = self.visit(ctx.expr(1))
 
+        if not isinstance(left, bool) or not isinstance(right, bool):
+            raise ValueError("Operacje logiczne mogą być wykonywane tylko na typach bool")
+
         # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
         from antlr.AMMScriptParser import AMMScriptParser
 
@@ -728,6 +731,9 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         if isinstance(right, str):
             right = float(right) if right.isdigit() else right
 
+        if type(left) != type(right):
+            raise TypeError("Nie można porównać wartości różnych typów")
+
         # ! Nie wiem dlaczego tak trzeba ale bez tego nie działa
         from antlr.AMMScriptParser import AMMScriptParser
 
@@ -765,6 +771,9 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
         if left == 0 and right == 0:
             raise Exception("Nie można podnieść 0 do potęgi 0")
+
+        if type(left) == bool or type(right) == bool:
+            raise Exception("Nie można wykonać operacji potęgowania na typie bool")
 
         return left ** right
 

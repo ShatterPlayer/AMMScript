@@ -82,8 +82,9 @@ class TestAMMScriptParser(unittest.TestCase):
         print true || false;
         print true || true;
         print false || false;
+        print "napis" && true;
         """
-        expected_output = [False, False, True, True, True, False]
+        expected_output = [False, False, True, True, True, False, "Operacje logiczne mogą być wykonywane tylko na typach bool"]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_expr_mult_div_mod(self):
@@ -114,8 +115,9 @@ class TestAMMScriptParser(unittest.TestCase):
         set y = 6;
         print x <= y;
         print y > 20;
+        print 3 > true;
         """
-        expected_output = [True, False]
+        expected_output = [True, False, "Nie można porównać wartości różnych typów"]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_variable_assignment(self):
@@ -224,6 +226,7 @@ class TestAMMScriptParser(unittest.TestCase):
         print -2 ^ 2;
         print "napis" ^ 2;
         """
+
         expected_output = [8, 9, 3, 1, 1, 256, 1, 4, 'Nie można wykonać operacji potęgowania na napisach']
         self.assertEqual(self.getExecutedCode(code), expected_output)
 

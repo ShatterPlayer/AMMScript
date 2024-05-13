@@ -241,14 +241,15 @@ class TestAMMScriptParser(unittest.TestCase):
         expected_output = [1, 0, 1, 2, 3, 4]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def test_function_declaration(self):
+    def test_function(self):
         code = """
         func add(a, b) {
             return a + b;
         }
         print add(2,3);
+        print add(2,3,4);
         """
-        expected_output = [5]
+        expected_output = [5, 'Nieprawidłowa liczba parametrów, powinno być 2, a jest 3']
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_if_in_loop(self):
@@ -267,6 +268,16 @@ class TestAMMScriptParser(unittest.TestCase):
         expected_output = [0, 'is even', 1, 'is odd', 2, 'is even', 3, 'is odd']
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
+    def test_vaiable_in_for(self):
+        code = """
+        for set i = 0; i < 4; i = i + 1 {
+            print i;
+            set y = 5;
+        }
+        print y;
+        """
+        expected_output = [0, 1, 2, 3, "Zmienna zadeklarowana w pętli jest nieosiągalna z zewnątrz."]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
 
 if __name__ == '__main__':
     unittest.main()

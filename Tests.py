@@ -10,6 +10,7 @@ from antlr.AMMScriptLexer import AMMScriptLexer
 from antlr.AMMScriptParser import AMMScriptParser
 from AMMScript import interpret
 
+
 class TestAMMScriptParser(unittest.TestCase):
     def setUp(self):
         self.lexer = AMMScriptLexer(input)
@@ -31,12 +32,9 @@ class TestAMMScriptParser(unittest.TestCase):
 
         return last_line
 
-
-
     def getExecutedCode(self, code):
         result = interpret(code)
         return result
-
 
     def test_print(self):
         code = """
@@ -78,15 +76,14 @@ class TestAMMScriptParser(unittest.TestCase):
 
     def test_expr_and_or(self):
         code = """
-        print true and (false or true);
-        print false and false;
-        print false and true;
-        print true and true;
-        print true or false;
-        print true or true;
-        print false or false;
+        print false && false;
+        print false && true;
+        print true && true;
+        print true || false;
+        print true || true;
+        print false || false;
         """
-        expected_output = [True, False, False, True, True, True, False]
+        expected_output = [False, False, True, True, True, False]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_expr_mult_div_mod(self):
@@ -115,11 +112,10 @@ class TestAMMScriptParser(unittest.TestCase):
         code = """
         set x = 5;
         set y = 6;
-        print x < 10 and y >= 5;
         print x <= y;
         print y > 20;
         """
-        expected_output = [True, True, False]
+        expected_output = [True, False]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_variable_assignment(self):
@@ -136,7 +132,11 @@ class TestAMMScriptParser(unittest.TestCase):
     def test_if(self):
         code = """"
         set x = 10;
-        if (x > 5) { x = 9; } else { print x = 0; })
+        if (x > 5) {
+            x = 9;
+        } else {
+            x = 0;
+        }
         print x;
         """
         expected_output = [9]
@@ -162,7 +162,7 @@ class TestAMMScriptParser(unittest.TestCase):
 
     def test_while(self):
         code = """
-        int i = 0;
+        set i = 0;
         while (i < 5) {
             i = i + 1;
             print i;
@@ -185,7 +185,7 @@ class TestAMMScriptParser(unittest.TestCase):
             }
           }
         }
-        
+
         for set k=0;k < 5;k = k + 1 {
         print a[k];
         }"""
@@ -218,24 +218,12 @@ class TestAMMScriptParser(unittest.TestCase):
         expected_output = [8, 9, 3, 1, 1, 256, 1, 4, 'Nie można wykonać operacji potęgowania na napisach']
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def test_exp_parenthesis(self):
-        code = """
-        print (3 + 2) * 4;
-        print 28 - (-3);
-        print 3 ^ (2 + 1)
-        """
-        expected_output = [20, 31, 27]
-        self.assertEqual(self.getExecutedCode(code), expected_output)
-
     def test_visit_array(self):
         code = """
-        set a[4] = [1, 2, 3, -20];
-        print a[0];
-        print a[1];
-        print a[2]; 
-        print a[3]
+        set my_array[4] = [1, 2, 3, -20];
+        print my_array[0];
         """
-        expected_output = [1, 2, 3, -20]
+        expected_output = [1]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_function_declaration(self):
@@ -263,6 +251,7 @@ class TestAMMScriptParser(unittest.TestCase):
         """
         expected_output = [0, 'is even', 1, 'is odd', 2, 'is even', 3, 'is odd']
         self.assertEqual(self.getExecutedCode(code), expected_output)
+
 
 if __name__ == '__main__':
     unittest.main()

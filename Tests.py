@@ -248,6 +248,7 @@ class TestAMMScriptParser(unittest.TestCase):
         }
         print add(2,3);
         print add(2,3,4);
+            
         """
         expected_output = [5, 'Nieprawidłowa liczba parametrów, powinno być 2, a jest 3']
         self.assertEqual(self.getExecutedCode(code), expected_output)
@@ -268,7 +269,7 @@ class TestAMMScriptParser(unittest.TestCase):
         expected_output = [0, 'is even', 1, 'is odd', 2, 'is even', 3, 'is odd']
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def test_vaiable_in_for(self):
+    def test_variable_in_for(self):
         code = """
         for set i = 0; i < 4; i = i + 1 {
             print i;
@@ -277,6 +278,23 @@ class TestAMMScriptParser(unittest.TestCase):
         print y;
         """
         expected_output = [0, 1, 2, 3, "Zmienna zadeklarowana w pętli jest nieosiągalna z zewnątrz."]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+    def loop_in_function(self):
+        code = """
+        func subtract_every_other(number) {
+            set result = 0;
+            for set i = 1; i < number + 1; i = i + 1 {
+                for set j = 1; j < i + 1; j = j + 1 {
+                    result = result - 1;
+                }
+            }
+            return result;
+        }
+        
+        print subtract_every_other(5);
+        """
+        expected_output = [-15]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
 if __name__ == '__main__':

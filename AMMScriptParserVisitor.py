@@ -609,8 +609,8 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         body = func_info['body']  
 
         
-        passed_arguments = [self.visit(arg) for arg in ctx.expr()]  
-        
+        passed_arguments = [self.visit(arg) for arg in ctx.expr()]
+
         local_scope = {}
         arg_index = 0
 
@@ -825,6 +825,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 for arg in arguments:
                     if arg.strip():
                         passed_arguments.append(eval(arg.strip()))
+
+            if len(passed_arguments) != len(parameters):
+                raise Exception(
+                    f"Nieprawidłowa liczba parametrów, powinno być {len(parameters)}, a jest {len(passed_arguments)}")
 
             local_scope = self.assign_parameters(parameters, passed_arguments)
 

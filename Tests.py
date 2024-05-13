@@ -280,7 +280,7 @@ class TestAMMScriptParser(unittest.TestCase):
         expected_output = [0, 1, 2, 3, "Zmienna zadeklarowana w pętli jest nieosiągalna z zewnątrz."]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def loop_in_function(self):
+    def test_loop_in_function(self):
         code = """
         func subtract_every_other(number) {
             set result = 0;
@@ -293,8 +293,25 @@ class TestAMMScriptParser(unittest.TestCase):
         }
         
         print subtract_every_other(5);
+        
+        func substract_every_third(number) {
+                set result = 0;
+                set i = 1;
+                while (i <= number) {
+                    set j = 1;
+                    while (j <= i && i % 3 == 0) {
+                        result = result - 1; 
+                        j = j + 1;
+                    }
+                    i = i + 1;
+                }
+                return result;
+            }
+        
+        
+        print substract_every_third(10);
         """
-        expected_output = [-15]
+        expected_output = [-15, -18]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
 if __name__ == '__main__':

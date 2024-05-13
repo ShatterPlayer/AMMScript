@@ -12,9 +12,8 @@ export const AMMScript = () => {
     console.log("Kompilacja w toku...");
     axios.post("http://localhost:5000/interpret", { code }) 
       .then(response => {
-        const resultText = JSON.stringify(response.data);
         console.log(response.data);
-        setConsoleOutput(resultText);
+        setConsoleOutput(response.data.reduce((acc, curr) => acc + curr + "\n", ""));
       })
       .catch(error => {
         console.error("Błąd:", error);

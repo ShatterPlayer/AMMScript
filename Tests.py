@@ -42,8 +42,9 @@ class TestAMMScriptParser(unittest.TestCase):
         print "Hello World!";
         print true;
         print false;
+        print x;
         """
-        expected_output = [3, 'Hello World!', True, False]
+        expected_output = [3, 'Hello World!', True, False, "Próba wypisania niezadeklarowanej wartości."]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_true(self):

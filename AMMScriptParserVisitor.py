@@ -176,7 +176,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         if expr_value in self.variables:
             self.results.append(float(self.variables[expr_value]))
         else:
+            if expr_value is None:
+                raise Exception(f"Próba wypisania niezadeklarowanej wartości.")
             self.results.append(expr_value)
+
         return
 
     def visitIf(self, ctx: AMMScriptParser.IfContext):

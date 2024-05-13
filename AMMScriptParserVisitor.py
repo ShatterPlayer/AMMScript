@@ -550,38 +550,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 self.visit(stmt)
 
         return None
-    """
-    def visitFunctionDeclaration(self, ctx: AMMScriptParser.FunctionDeclarationContext):
-        from antlr.AMMScriptParser import AMMScriptParser
-        print("visitFunctionDeclaration")
-
-        function_name = ctx.ID(0).getText()
-        print("function_name: ", function_name)
-
-        parametersList = []
-
-        for i in range(1, len(ctx.ID())):
-            if ctx.ID(i):
-                print("i", ctx.ID(i).getText())
-                parametersList.append(ctx.ID(i).getText())
-
-        print("parametersList:", parametersList)
-
-        function_block = ctx.statementInFunction(0).getText()
-        print("function_block: ", function_block)
-
-        if function_name in self.functions:
-            errorMsg = "Nazwa funkcji '{}' już zdefiniowana"
-            return VisitorError(errorMsg.format(function_name))
-        parametersSet = set(parametersList)
-        if not (len(parametersSet) == len(parametersList)):
-            errorMsg = "Parametry w funkcji '{}' mają już taką samą nazwę"
-            return VisitorError(errorMsg.format(function_name))
-
-        self.functions[function_name] = (parametersList, function_block)
-
-        print(self.functions.items())
-    """
+   
     def visitFunctionDeclaration(self, ctx: AMMScriptParser.FunctionDeclarationContext):
         from antlr.AMMScriptParser import AMMScriptParser
         print("visitFunctionDeclaration")
@@ -623,6 +592,14 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     
     def visitFunctionCall(self, ctx: AMMScriptParser.FunctionCallContext):
         from antlr.AMMScriptParser import AMMScriptParser
+
+        print("visitFunctionCall")
+        
+        if not hasattr(ctx, 'already_executed'):
+            setattr(ctx, 'already_executed', True)
+        else:
+            return
+
         func_name = ctx.ID().getText()  
         if func_name not in self.functions:
             raise Exception(f"Nie zdefiniowano funkcji '{func_name}'.")  
@@ -633,82 +610,34 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
         
         passed_arguments = [self.visit(arg) for arg in ctx.expr()]  
-        if len(passed_arguments) != len(parameters):
-            print(passed_arguments)
-            print(parameters)
-            raise Exception("Nie zgadza się liczba parametrów")
-
         
-        local_scope = dict(zip(parameters, passed_arguments))
+        local_scope = {}
+        arg_index = 0
+
+        for param, def_val in parameters.items():
+            if arg_index < len(passed_arguments):
+                local_scope[param] = passed_arguments[arg_index]
+            elif def_val is not None:
+                local_scope[param] = def_val
+            else:
+                raise Exception(f"Brak domyślnego argumentu dla {param}")
+            arg_index += 1  
+
         old_variables = self.variables.copy()
         self.variables.update(local_scope)
-        return_value = None
 
+        return_value = None
         try:
             for statement in body:
                 self.visit(statement)
         except ReturnException as e:
-            return_value = e.value 
+            return_value = e.value
         finally:
             self.variables = old_variables
-
-        return return_value
-
+        return return_value      
 
 
-    """
-    # Visit a parse tree produced by AMMScriptParser#functionCall.
-    def visitFunctionCall(self, ctx: AMMScriptParser.FunctionCallContext):
-        from antlr.AMMScriptParser import AMMScriptParser
-        from antlr.AMMScriptLexer import AMMScriptLexer
-        print("visitFunctionCall")
 
-        function_name = ctx.ID().getText()
-        print("function_name:", function_name)
-
-        values = []
-        param_count = len(ctx.expr())
-        print("param_count: ", param_count)
-
-        for i in range(param_count):
-            expr_ctx = ctx.expr(i)
-            if isinstance(expr_ctx, AMMScriptParser.ExprIdContext):
-                value = self.visitExprId(expr_ctx)
-            else:
-                value = self.visit(expr_ctx)
-
-            values.append(value)
-
-        print("values: ", values)
-        print(self.functions.keys())
-        print("self.functions.get(function_name): ", self.functions.get(function_name))
-
-        parametersList, function_block = self.functions.get(function_name)
-
-        if len(values) != param_count:
-            errorMsg = "Nieodpowiednia liczba parametrów w funkcji '{}', oczekiwano {}, ale {} otrzymano"
-            return VisitorError(errorMsg.format(function_name, param_count, len(values)))
-
-        for i in range(param_count):
-            self.variables[parametersList[i]] = float(values[i])
-
-        print("variables: ", self.variables)
-
-        if function_block.startswith("return"):
-            function_block = function_block[len("return"):].strip()
-
-        print("After modification:", function_block)
-
-        input_stream = InputStream(function_block)
-        lexer = AMMScriptLexer(input_stream)
-        stream = CommonTokenStream(lexer)
-        parser = AMMScriptParser(stream)
-        tree = parser.program()
-
-        ret = self.visit(tree)
-
-        return ret
-    """
     # Visit a parse tree produced by AMMScriptParser#exprTrue.
     def visitExprTrue(self, ctx: AMMScriptParser.ExprTrueContext):
         return True
@@ -862,53 +791,94 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         print('visitExprNumber')
         return float(ctx.NUMBER().getText())
 
-    # Visit a parse tree produced by AMMScriptParser#exprFunctionCall.
+        
     def visitExprFunctionCall(self, ctx):
+        
         print("visitExprFunctionCall")
-        func_call_text = ctx.getText()  
-
-        import re
-        match = re.match(r"(\w+)\((.*)\)", func_call_text)
-        if not match:
-            raise Exception("zły format")
-
-        func_name = match.group(1)
-        argument_text = match.group(2)  
-
-        if func_name not in self.functions:
-            raise Exception(f"Nie zdefiniowano funkcji: '{func_name}'")
-
-        func_info = self.functions[func_name]
-        parameters = func_info['parameters']
-        body = func_info['body']
-
         
-        passed_arguments = []
-        if argument_text:
-            arguments = argument_text.split(',')
-            for arg in arguments:
-                if arg.strip():
-                    
-                    passed_arguments.append(eval(arg.strip())) 
+        if hasattr(ctx, 'already_executed'):
+            return getattr(ctx, 'result_return')
+        else:
+            setattr(ctx, 'already_executed', True)
+            
+            
+            func_call_text = ctx.getText() 
+            import re
+            match = re.match(r"(\w+)\((.*)\)", func_call_text)
+            if not match:
+                raise Exception("zły format")
 
-        if len(passed_arguments) != len(parameters):
-            raise Exception("Nieprawidłowa liczba parametrów")
+            func_name = match.group(1)
+            argument_text = match.group(2)  
 
-        
-        local_scope = dict(zip(parameters, passed_arguments))
-        old_variables = self.variables.copy()
-        self.variables.update(local_scope)
+            if func_name not in self.functions:
+                raise Exception(f"Nie zdefiniowano funkcji {func_name}")
 
-        return_value = None
-        try:
-            for statement in body:
-                self.visit(statement)
-        except ReturnException as e:
-            return_value = e.value
-        finally:
-            self.variables = old_variables
+            func_info = self.functions[func_name]
+            parameters = func_info['parameters']
+            body = func_info['body']
 
-        return return_value
+           
+            passed_arguments = []
+            if argument_text.strip():
+                arguments = self.split_arguments(argument_text)
+                for arg in arguments:
+                    if arg.strip():
+                        passed_arguments.append(eval(arg.strip()))
+
+            local_scope = self.assign_parameters(parameters, passed_arguments)
+
+            old_variables = self.variables.copy()
+            self.variables.update(local_scope)
+
+            return_value = None
+            try:
+                for statement in body:
+                    self.visit(statement)
+            except ReturnException as e:
+                return_value = e.value
+            finally:
+                self.variables = old_variables
+
+            setattr(ctx, 'result_return', return_value)
+            return return_value
+
+          
+    def split_arguments(self, argument_text):
+        # bierze pod uwagę zagnieżdżone nawiasy
+        args = []
+        level = 0
+        start = 0
+
+        for i, char in enumerate(argument_text):
+            if char == ',' and level == 0:
+                args.append(argument_text[start:i].strip())
+                start = i+1
+            elif char == '(':
+                level += 1
+            elif char == ')':
+                level -= 1
+
+        if start < len(argument_text):
+            args.append(argument_text[start:].strip())  
+
+        return args
+
+
+    def assign_parameters(self, parameters, passed_arguments):
+        local_scope = {}
+        for i, (param, default) in enumerate(parameters.items()):
+            if i < len(passed_arguments):
+                local_scope[param] = passed_arguments[i]
+            elif default is not None:
+                local_scope[param] = default
+            else:
+                raise Exception(f"Nie zdefiniowano domyślnej wartości dla {param}'")
+            
+        for i in list(local_scope):
+            print(f"{i} : {local_scope[i]}")
+        print(f"local scope : {list(local_scope)}")
+        return local_scope
 
     # Visit a parse tree produced by AMMScriptParser#arrayExpr.
     def visitArrayExpr(self, ctx:AMMScriptParser.ArrayExprContext):

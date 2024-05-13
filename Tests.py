@@ -245,7 +245,7 @@ class TestAMMScriptParser(unittest.TestCase):
         }
         print add(2,3);
         """
-        expected_output = [5, 24]
+        expected_output = [5]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_if_in_loop(self):

@@ -53,7 +53,7 @@ statementInFunctionAndLoop:
 
 variableDeclaration: SET ID ((EQUAL expr) | (LBRACKET NUMBER RBRACKET EQUAL LBRACKET (expr (COMMA expr)*)? RBRACKET));
 variableAsignment:
-	ID (LBRACKET NUMBER RBRACKET)? (
+	ID (LBRACKET expr RBRACKET)? (
 		EQUAL
 		| PLUS_EQUAL
 		| MINUS_EQUAL
@@ -117,7 +117,7 @@ functionDeclaration:
 
 functionCall: ID LPAREN (expr (COMMA expr)*)? RPAREN;
 
-arrayExpr: ID LBRACKET NUMBER RBRACKET;
+arrayExpr: ID LBRACKET expr RBRACKET;
 
 expr:
 	LPAREN expr RPAREN # exprParenthesis

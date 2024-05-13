@@ -84,17 +84,87 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         print("visitVariableDeclaration")
         variable_name = ctx.ID().getText()
         print("variable_name:", variable_name)
-        value = self.visit(ctx.expr(0))
-        print("value:", value)
-        self.variables[variable_name] = value
+        if ctx.LBRACKET(0) != None:
+            # Array
+            arraySize = ctx.NUMBER().getText()
+
+            if '.' in arraySize:
+                raise Exception("Niepoprawny rozmiar tablicy")
+            
+            arraySize = int(arraySize)
+
+            self.variables[variable_name] = []
+
+            i = 0
+            while i < arraySize:
+                if ctx.expr(i) == None:
+                    del self.variables[variable_name]
+                    raise Exception("Niepoprawny rozmiar tablicy")
+                self.variables[variable_name].append(self.visit(ctx.expr(i)))
+                i += 1
+            if ctx.expr(i) != None:
+                raise Exception("Niepoprawny rozmiar tablicy")
+        else:
+            value = self.visit(ctx.expr(0))
+            print("value:", value)
+            self.variables[variable_name] = value
+
+        print("variables:", self.variables)
+        if ctx.LBRACKET(0) != None:
+            # Array
+            arraySize = ctx.NUMBER().getText()
+
+            if '.' in arraySize:
+                raise Exception("Niepoprawny rozmiar tablicy")
+            
+            arraySize = int(arraySize)
+
+            self.variables[variable_name] = []
+
+            i = 0
+            while i < arraySize:
+                if ctx.expr(i) == None:
+                    del self.variables[variable_name]
+                    raise Exception("Niepoprawny rozmiar tablicy")
+                self.variables[variable_name].append(self.visit(ctx.expr(i)))
+                i += 1
+            if ctx.expr(i) != None:
+                raise Exception("Niepoprawny rozmiar tablicy")
+        else:
+            value = self.visit(ctx.expr(0))
+            print("value:", value)
+            self.variables[variable_name] = value
+
+        print("variables:", self.variables)
         return
 
     # Visit a parse tree produced by AMMScriptParser#variableAsignment.
     def visitVariableAsignment(self, ctx: AMMScriptParser.VariableAsignmentContext):
         print('visitVariableAsignment')
-        variable_name = ctx.ID().getText()
-        value = self.visit(ctx.expr())
-        self.variables[variable_name] = value
+        if ctx.LBRACKET() != None:
+            # Array
+            variable_name = ctx.ID().getText()
+            index = self.visit(ctx.expr(0))
+
+            if variable_name not in self.variables:
+                raise Exception(f"Tablica {variable_name} nie istnieje")
+            
+            if isinstance(index, int) == False:
+                raise Exception("Niepoprawny indeks tablicy")
+            
+            index = int(index)
+
+            if index >= len(self.variables[variable_name]):
+                raise Exception(f"Indeks {index} poza zakresem tablicy {variable_name}")
+            
+            self.variables[variable_name][index] = self.visit(ctx.expr(1))
+        else:
+            variable_name = ctx.ID().getText()
+            value = self.visit(ctx.expr(0))
+
+            print("variable_name:", variable_name)
+            print("value:", value)
+            self.variables[variable_name] = value
         return
 
     # Visit a parse tree produced by AMMScriptParser#print.
@@ -781,9 +851,11 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     def visitExprNumber(self, ctx: AMMScriptParser.ExprNumberContext):
         from antlr.AMMScriptParser import AMMScriptParser
         print('visitExprNumber')
-        num_val = float(ctx.NUMBER().getText())
-        print(f"Widzę liczbę {num_val}")
-        return float(ctx.NUMBER().getText())
+        if '.' in ctx.NUMBER().getText():
+            return float(ctx.NUMBER().getText())
+        else:
+            return int(ctx.NUMBER().getText())
+
 
     # Visit a parse tree produced by AMMScriptParser#exprNumber.
     def visitExprVariable(self, ctx: AMMScriptParser.ExprNumberContext):
@@ -838,15 +910,30 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
         return return_value
 
-
-
-
-
-
-
     # Visit a parse tree produced by AMMScriptParser#arrayExpr.
-    def visitArrayExpr(self, ctx: AMMScriptParser.ArrayExprContext):
-        return self.visitChildren(ctx)
+    def visitArrayExpr(self, ctx:AMMScriptParser.ArrayExprContext):
+        variableName = ctx.ID().getText()
+        index = self.visit(ctx.expr())
+
+        print(index)
+        if isinstance(index, int) == False:
+            raise Exception("Niepoprawny indeks tablicy")
+
+
+        if variableName not in self.variables:
+            raise Exception(f"Tablica {variableName} nie istnieje")
+        
+        print("variableName:", variableName)
+        print("index:", index)
+
+        print('variables:', self.variables)
+
+        index = int(index)
+
+        if index >= len(self.variables[variableName]):
+            raise Exception(f"Indeks {index} poza zakresem tablicy {variableName}")
+        
+        return self.variables[variableName][index]
 
 
 

@@ -1,4 +1,6 @@
 # Generated from AMMScriptParser.g4 by ANTLR 4.13.1
+import inspect
+
 from antlr4 import *
 from antlr.AMMScriptParser import AMMScriptParser
 import re
@@ -39,6 +41,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by AMMScriptParser#statementInLoop.
     def visitStatementInLoop(self, ctx: AMMScriptParser.StatementInLoopContext):
         return self.visitChildren(ctx)
+
 
     # Visit a parse tree produced by AMMScriptParser#statementInFunction.
     def visitStatementInFunction(self, ctx: AMMScriptParser.StatementInFunctionContext):
@@ -136,6 +139,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
             self.variables[variable_name] = value
 
         print("variables:", self.variables)
+
         return
 
     # Visit a parse tree produced by AMMScriptParser#variableAsignment.
@@ -803,9 +807,14 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         print('visitExprNumber')
         return float(ctx.NUMBER().getText())
 
-        
+    def count_default_parameters(self, parameters):
+        count = 0
+        for param_value in parameters.values():
+            if isinstance(param_value, inspect.Parameter) and param_value.default != inspect.Parameter.empty:
+                count += 1
+        return count
+
     def visitExprFunctionCall(self, ctx):
-        
         print("visitExprFunctionCall")
         
         if hasattr(ctx, 'already_executed'):
@@ -838,9 +847,11 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                     if arg.strip():
                         passed_arguments.append(eval(arg.strip()))
 
-            if len(passed_arguments) != len(parameters):
-                raise Exception(
-                    f"Nieprawidłowa liczba parametrów, powinno być {len(parameters)}, a jest {len(passed_arguments)}")
+            num_args_passed = self.count_default_parameters(parameters) + len(passed_arguments)
+            num_params_expected = sum(1 for param_value in parameters.values() if param_value is None)
+            num_optional_params = len(parameters) - num_params_expected
+            if num_args_passed > len(parameters) or num_args_passed < num_params_expected:
+                raise Exception(f"Niewłaściwa liczba przekazanych parametrów do funkcji {func_name}.")
 
             local_scope = self.assign_parameters(parameters, passed_arguments)
 
@@ -895,6 +906,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
             print(f"{i} : {local_scope[i]}")
         print(f"local scope : {list(local_scope)}")
         return local_scope
+
 
     # Visit a parse tree produced by AMMScriptParser#arrayExpr.
     def visitArrayExpr(self, ctx:AMMScriptParser.ArrayExprContext):

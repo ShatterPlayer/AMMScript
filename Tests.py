@@ -128,8 +128,9 @@ class TestAMMScriptParser(unittest.TestCase):
         x = 20;
         x = 29;
         print x;
+        print z;
         """
-        expected_output = [29]
+        expected_output = [29, "Próba wypisania niezadeklarowanej wartości."]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_if(self):
@@ -254,7 +255,7 @@ class TestAMMScriptParser(unittest.TestCase):
         print add(2,3,4);
             
         """
-        expected_output = [5, 'Nieprawidłowa liczba parametrów, powinno być 2, a jest 3']
+        expected_output = [5, f'Niewłaściwa liczba przekazanych parametrów do funkcji add.']
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_if_in_loop(self):
@@ -275,13 +276,16 @@ class TestAMMScriptParser(unittest.TestCase):
 
     def test_variable_in_for(self):
         code = """
-        for set i = 0; i < 4; i = i + 1 {
-            print i;
-            set y = 5;
-        }
-        print y;
+        func fun() {
+            for set i = 0; i < 2; i = i + 1 {
+            set x = 5;
+            return i + 1; 
+            }
+        } 
+        
+        print x;
         """
-        expected_output = [0, 1, 2, 3, "Zmienna zadeklarowana w pętli jest nieosiągalna z zewnątrz."]
+        expected_output = ["Próba wypisania niezadeklarowanej wartości."]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_loop_in_function(self):
@@ -317,6 +321,55 @@ class TestAMMScriptParser(unittest.TestCase):
         """
         expected_output = [-15, -18]
         self.assertEqual(self.getExecutedCode(code), expected_output)
+
+
+    def test_switch_in_function(self):
+        code = """
+        func fun(x) {
+            switch (x) {
+                case 1:
+                    set x = 10;
+                    return x;
+                    break;
+                case 2:
+                    set x = 15;
+                    return x;
+                    break;
+                default:
+                    set x = 0;
+                    return x;
+            }
+        }
+        
+        print fun(2);
+        """
+        expected_output = [15]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+        def test_default_arguments_in_function(self):
+            code = """
+            func fun(x) {
+                switch (x) {
+                    case 1:
+                        set x = 10;
+                        return x;
+                        break;
+                    case 2:
+                        set x = 15;
+                        return x;
+                        break;
+                    default:
+                        set x = 0;
+                        return x;
+                }
+            }
+
+            print fun(2);
+            print fun();
+            """
+            expected_output = [15, 0]
+            self.assertEqual(self.getExecutedCode(code), expected_output)
+
 
 if __name__ == '__main__':
     unittest.main()

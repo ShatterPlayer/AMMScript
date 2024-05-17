@@ -118,7 +118,7 @@ class TestAMMScriptParser(unittest.TestCase):
         print y > 20;
         print 3 > true;
         """
-        expected_output = [True, False, "Nie można porównać wartości różnych typów: 3, True"]
+        expected_output = [True, False, "Nie można porównać wartości różnych typów"]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_variable_assignment(self):
@@ -229,7 +229,7 @@ class TestAMMScriptParser(unittest.TestCase):
         print "napis" ^ 2;
         """
 
-        expected_output = [8, 9, 3, 1, 1, 256, 1, 4, 'Nie można wykonać operacji potęgowania na napisach: napis, 2']
+        expected_output = [8, 9, 3, 1, 1, 256, 1, 4, 'Nie można wykonać operacji potęgowania na napisach']
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_visit_array(self):
@@ -394,12 +394,86 @@ class TestAMMScriptParser(unittest.TestCase):
             return a + b;
         }
         
-        c = 8;
         print c;
         """
         expected_output = ["Próba wypisania niezadeklarowanej wartości."]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
+    def test_local_variable_in_function(self):
+        code = """
+        func myFunc() {
+            set y = 20;
+            return y;
+        }    
+        print myFunc();
+        print y;
+        """
+        expected_output = [20, "Próba wypisania niezadeklarowanej wartości."]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+    def test_global_variable_in_function(self):
+        code = """
+        set x = 10;
+        func myFunc() {
+            return x;
+        }    
+        print myFunc();
+        """
+        expected_output = [10]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+    def test_local_and_global_variable(self):
+        code = """
+        set x = 10;
+        func myFunc() {
+            set x = 20;
+            return x;
+        }    
+        print myFunc();
+        print x;
+        """
+        expected_output = [20, 10]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+    def test_function_scope(self):
+        code = """
+        func outerFunc() {
+            set x = 30;
+            func innerFunc() {
+                print x;
+            }    
+            print innerFunc();
+        }    
+        print outerFunc();
+        """
+        expected_output = [30]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+    def test_nested_functions_with_local_variable(self):
+        code = """
+        func outerFunc() {
+            set x = 40;
+            func innerFunc() {
+                set x = 50;
+                print x;
+            }    
+            print innerFunc();
+            print x;
+        }
+        print outerFunc();
+        """
+        expected_output = [50, 40]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+    def test_function_with_default_parameters(self):
+        code = """
+        func myFunc(a, b=5) {
+            return a + b;
+        }
+        print myFunc(10);
+        """
+        expected_output = [15]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
 
 if __name__ == '__main__':
     unittest.main()

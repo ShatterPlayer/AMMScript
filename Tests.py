@@ -437,32 +437,39 @@ class TestAMMScriptParser(unittest.TestCase):
 
     def test_function_scope(self):
         code = """
+        func innerFunc() {
+            set x = 20;
+            return x;
+        }       
+        
         func outerFunc() {
             set x = 30;
-            func innerFunc() {
-                print x;
-            }    
             print innerFunc();
+            return x;
         }    
+        
         print outerFunc();
         """
-        expected_output = [30]
+        expected_output = [20, 30]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def test_nested_functions_with_local_variable(self):
+    def test_function_scope2(self):
         code = """
+        func innerFunc() {
+            set x = 50;
+            return x;
+        }         
+            
         func outerFunc() {
-            set x = 40;
-            func innerFunc() {
-                set x = 50;
-                print x;
-            }    
+            set x = 40; 
             print innerFunc();
-            print x;
+            return x;
         }
+        
         print outerFunc();
+        print x;
         """
-        expected_output = [50, 40]
+        expected_output = [50, 40, "Próba wypisania niezadeklarowanej wartości."]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_function_with_default_parameters(self):

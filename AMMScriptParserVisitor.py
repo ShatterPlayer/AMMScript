@@ -38,6 +38,9 @@ class Scope:
     def set(self, name, value):
         self.variables[name] = value
 
+    def update(self, other):
+        self.variables.update(other)
+
     def set_local(self, name, value):
         self.variables[name] = value
 
@@ -185,6 +188,9 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         print('visitPrint')
         expr_value = self.visit(ctx.expr())
         print("value: ", expr_value)
+
+        if isinstance(expr_value, str) and expr_value in self.current_scope.variables:
+            self.results.append(float(self.current_scope.variables[expr_value]))
 
         if expr_value is None:
             raise Exception(f"Próba wypisania niezadeklarowanej wartości.")
@@ -580,8 +586,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         params_ctx = ctx.children[ctx.children.index(ctx.LPAREN()) + 1:ctx.children.index(ctx.RPAREN())]
         i = 0
         while i < len(params_ctx):
-            if isinstance(params_ctx[i], antlr4.tree.Tree.TerminalNode) and params_ctx[
-                i].symbol.type == AMMScriptParser.ID:
+            if isinstance(params_ctx[i], antlr4.tree.Tree.TerminalNode) and params_ctx[i].symbol.type == AMMScriptParser.ID:
                 param_name = params_ctx[i].getText()
                 if i + 1 < len(params_ctx) and params_ctx[i + 1].getText() == '=':
                     default_value = self.visit(params_ctx[i + 2])
@@ -626,6 +631,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
         for param, value in zip(parameters.keys(), passed_arguments):
             local_scope.set(param, value)
+
+        for param in parameters.keys():
+            if param not in local_scope.variables:
+                local_scope.set(param, parameters[param])
 
         previous_scope = self.current_scope
         self.current_scope = local_scope

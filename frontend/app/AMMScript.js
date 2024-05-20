@@ -111,6 +111,28 @@ export const AMMScript = () => {
         },
       });
       monaco.editor.setTheme('ammTheme');
+
+      monaco.languages.setLanguageConfiguration('ammLanguage', {
+        surroundingPairs: [
+          { open: '(', close: ')' },
+          { open: '[', close: ']' },
+          { open: '{', close: '}' },
+          { open: '"', close: '"' }
+        ],
+
+        autoClosingPairs: [
+          { open: '(', close: ')' },
+          { open: '[', close: ']' },
+          { open: '{', close: '}' },
+          { open: '"', close: '"' }
+        ],
+
+        brackets: [
+          ['(', ')'],
+          ['[', ']'],
+          ['{', '}'],
+        ]
+      })
     }
   }, [monaco]);
 
@@ -179,6 +201,7 @@ export const AMMScript = () => {
                 onChange={handleChange}
                 onMount={handleEditorDidMount}
                 theme="ammTheme"
+                autoClo
               />
               </div>
               <img className="line" alt="Line" src="https://c.animaapp.com/a0hzXRiM/img/line-.svg" />

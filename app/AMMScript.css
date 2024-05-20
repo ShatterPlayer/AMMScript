@@ -73,7 +73,7 @@
 }
 
 .AMM-script .rectangle-2 {
-  background-color: #000000c4;
+  background-color: #1E1E1E;
   border-radius: 20px;
   box-shadow: 0px 4px 4px #00000040;  
   height: 500px;
@@ -89,7 +89,7 @@
   left: 181px;
   object-fit: cover;
   position: absolute;
-  top: 129px;
+  top: 125px;
   width: 1074px;
 }
 

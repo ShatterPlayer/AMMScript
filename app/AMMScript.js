@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from 'react';
 import "./AMMScript.css";
 import '../app/globals.css'
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import Editor from "@monaco-editor/react";
 
 export const AMMScript = () => {
   const [code, setCode] = useState(""); 
   const [consoleOutput, setConsoleOutput] = useState("");
+  const [editorCode, setEditorCode] = useState('# Write your code here...');
+  const editorRef = useRef(null);
 
   const compile = () => {
     console.log("Kompilacja w toku...");
@@ -21,6 +24,27 @@ export const AMMScript = () => {
       });
   };
 
+  const handleEditorDidMount = (editor) => {
+    editorRef.current = editor;
+
+    editor.onDidFocusEditorText(() => {
+      if (editor.getValue() === '# Write your code here...') {
+        setEditorCode('');
+      }
+    });
+
+    editor.onDidBlurEditorText(() => {
+      if (editor.getValue().trim() === '') {
+        setEditorCode('# Write your code here...');
+      }
+    });
+  };
+
+  const handleChange = (value) => {
+    setEditorCode(value);
+    setCode(value); 
+  };
+
   return (
     <div className="AMM-script">
       <div className="div">
@@ -30,7 +54,16 @@ export const AMMScript = () => {
             <div className="overlap-4">
              <div className="rectangle"/>
               <div className="rectangle-2" />
-              <textarea id="code-input" rows="10" cols="50" placeholder="AMM Script>" value={code} onChange={(e) => setCode(e.target.value)}></textarea>
+              <div id="code-input">
+              <Editor
+                  defaultLanguage="plaintext"
+                  value={editorCode}
+                  defaultValue="# Write your code here..."
+                  onChange={handleChange}
+                  onMount={handleEditorDidMount}
+                  theme="vs-dark"
+                />
+              </div>
               <img className="line" alt="Line" src="https://c.animaapp.com/a0hzXRiM/img/line-.svg" />
               <div className="text-wrapper-4">Write your code below:</div>
             </div>

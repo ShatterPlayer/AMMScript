@@ -286,8 +286,13 @@ npm run dev
 ```
 Pojawi się wtedy link http://localhost:3000, jeśli się go kliknie będzie widać poniższą stronę:
 (podgląd)
-![image](https://github.com/ShatterPlayer/AMMScript/assets/115782747/84b32b6c-4705-4efa-9940-20d6c96fad95)
-![image](https://github.com/ShatterPlayer/AMMScript/assets/115782747/bd7341ac-c887-4d6c-ab61-9fc73e063542)
+
+![AMMScript1](https://github.com/ShatterPlayer/AMMScript/assets/115782747/c3e5c2bf-66d5-4289-b541-7319145d6bbd)
+![AMMScript2](https://github.com/ShatterPlayer/AMMScript/assets/115782747/b6637b56-6018-4d8b-b738-c5fa80b03c50)
+![AMMScript3](https://github.com/ShatterPlayer/AMMScript/assets/115782747/6e239890-7804-406c-9c0e-0d707d8149d1)
+![AMMScript4](https://github.com/ShatterPlayer/AMMScript/assets/115782747/1eaad806-77ed-4d2e-98b7-728cd948b8b4)
+![AMMScript5](https://github.com/ShatterPlayer/AMMScript/assets/115782747/664e9715-9165-4c4f-9152-9a587715bef4)
+![AMMScript6](https://github.com/ShatterPlayer/AMMScript/assets/115782747/5fecc80c-7686-4209-9bd1-35cfe8101382)
 
 ## Przykłady
 Przykładowy program w języku AMMScript znajduje się w pliku `program.amm` (nie ma on sensu z logicznego punktu widzenia, służy tylko do prezentacji struktur dostępnych w języku).

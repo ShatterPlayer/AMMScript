@@ -3,13 +3,73 @@ import "./AMMScript.css";
 import '../app/globals.css'
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import Editor from "@monaco-editor/react";
+import Editor, { useMonaco } from "@monaco-editor/react";
 
 export const AMMScript = () => {
   const [code, setCode] = useState(""); 
   const [consoleOutput, setConsoleOutput] = useState("");
   const [editorCode, setEditorCode] = useState('# Write your code here...');
   const editorRef = useRef(null);
+
+  const monaco = useMonaco();
+
+  useEffect(() => {
+    if (monaco) {
+      monaco.languages.register({ id: 'ammLanguage' });
+  
+      monaco.languages.setMonarchTokensProvider('ammLanguage', {
+        tokenizer: {
+          root: [
+            [/^#.*$/, 'comment'],
+  
+            [/\b(set|print|if|else|for|while|func|return|break|continue|switch|case|default)\b/, 'keyword'],
+  
+            [/==|!=|<=|>=|<|>/, 'operator'],
+  
+            [/=|\+=|-=|\*=|\/=/, 'operator'],
+  
+            [/\+|-|\*|\/|\^|%/, 'operator'],
+  
+            [/[(){}[\]]/, 'bracket'],
+  
+            [/(\-)?\d+(\.\d+)?/, 'number'],
+  
+            [/".*?"/, 'string'],
+  
+            [/\b(true|false)\b/, 'keyword'],
+  
+            [/&&|\|\||!/, 'operator'],
+  
+            [/,|;|:/, 'delimiter'],
+  
+            [/[a-zA-Z_][a-zA-Z0-9_]*/, 'identifier'],
+  
+            [/[ \t\r\n]+/, '']
+          ]
+        }
+      });
+  
+      monaco.editor.defineTheme('ammTheme', {
+        base: 'vs-dark',
+        inherit: true,
+        rules: [
+          { token: 'comment', foreground: 'ffa500', fontStyle: 'italic' },
+          { token: 'keyword', foreground: '569cd6' },
+          { token: 'number', foreground: 'b5cea8' },
+          { token: 'string', foreground: 'ce9178' },
+          { token: 'operator', foreground: 'd4d4d4' },
+          { token: 'bracket', foreground: 'd4d4d4' },
+          { token: 'delimiter', foreground: 'd4d4d4' },
+          { token: 'identifier', foreground: '9cdcfe' }
+        ],
+        colors: {
+          'editor.background': '#000000', 
+          'editorLineNumber.foreground': '#858585',
+        },
+      });
+      monaco.editor.setTheme('ammTheme');
+    }
+  }, [monaco]);
 
   const compile = () => {
     console.log("Kompilacja w toku...");
@@ -25,18 +85,23 @@ export const AMMScript = () => {
 
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
-
+  
     editor.onDidFocusEditorText(() => {
       if (editor.getValue() === '# Write your code here...') {
         setEditorCode('');
       }
     });
-
+  
     editor.onDidBlurEditorText(() => {
       if (editor.getValue().trim() === '') {
         setEditorCode('# Write your code here...');
       }
     });
+  
+    if (monaco) {
+      monaco.editor.setModelLanguage(editor.getModel(), 'ammLanguage');
+      monaco.editor.setTheme('ammTheme');
+    }
   };
 
   const handleChange = (value) => {
@@ -55,16 +120,16 @@ export const AMMScript = () => {
               <div className="rectangle-2" />
               <div id="code-input">
               <Editor
-                  defaultLanguage="plaintext"
-                  value={editorCode}
-                  defaultValue="# Write your code here..."
-                  onChange={handleChange}
-                  onMount={handleEditorDidMount}
-                  theme="vs-dark"
-                />
+                defaultLanguage="ammLanguage"
+                value={editorCode}
+                defaultValue="# Write your code here..."
+                onChange={handleChange}
+                onMount={handleEditorDidMount}
+                theme="ammTheme"
+              />
               </div>
               <img className="line" alt="Line" src="https://c.animaapp.com/a0hzXRiM/img/line-.svg" />
-              <div className="text-wrapper-4">Write your code below:</div>
+              <div className="text-wrapper-4">Source code:</div>
             </div>
           </div>
           <button className="compile-button" onClick={compile}>

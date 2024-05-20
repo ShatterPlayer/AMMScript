@@ -40,15 +40,20 @@ export const AMMScript = () => {
   
     const lines = code.split('\n');
     lines.forEach((line, index) => {
-      if (!line.trim().endsWith(';') && line.trim() !== '') {
-        markers.push({
-          startLineNumber: index + 1,
-          startColumn: 1,
-          endLineNumber: index + 1,
-          endColumn: line.length + 1,
-          message: "Błąd składni: brakuje średnika ';' na końcu linii",
-          severity: monaco.MarkerSeverity.Error
-        });
+      const trimmedLine = line.trim();
+      if (trimmedLine) {
+        const startsWithKeyword = trimmedLine.startsWith("set") || trimmedLine.startsWith("print") || trimmedLine.startsWith("return") || trimmedLine.startsWith("break");
+        const endsWithSemicolon = trimmedLine.endsWith(';');
+        if (startsWithKeyword && !endsWithSemicolon) {
+          markers.push({
+            startLineNumber: index + 1,
+            startColumn: 1,
+            endLineNumber: index + 1,
+            endColumn: line.length + 1,
+            message: "Błąd składni: brakuje średnika ';' na końcu linii",
+            severity: monaco.MarkerSeverity.Error
+          });
+        }
       }
     });
   

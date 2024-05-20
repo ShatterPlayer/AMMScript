@@ -52,21 +52,6 @@ export const AMMScript = () => {
       }
     });
   
-    if (/print\(([^)]+)\)/.test(code)) {
-      const match = code.match(/print\(([^)]+)\)/);
-      const variable = match[1].trim();
-      if (!code.includes(`set ${variable}`)) {
-        markers.push({
-          startLineNumber: code.split('\n').findIndex(line => line.includes(`print(${variable})`)) + 1,
-          startColumn: 1,
-          endLineNumber: code.split('\n').findIndex(line => line.includes(`print(${variable})`)) + 1,
-          endColumn: code.length + 1,
-          message: `Niezdefiniowana zmienna '${variable}'`,
-          severity: monaco.MarkerSeverity.Error
-        });
-      }
-    }
-  
     return markers;
   };
   

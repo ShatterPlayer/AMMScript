@@ -40,15 +40,20 @@ export const AMMScript = () => {
   
     const lines = code.split('\n');
     lines.forEach((line, index) => {
-      if (!line.trim().endsWith(';') && line.trim() !== '') {
-        markers.push({
-          startLineNumber: index + 1,
-          startColumn: 1,
-          endLineNumber: index + 1,
-          endColumn: line.length + 1,
-          message: "Błąd składni: brakuje średnika ';' na końcu linii",
-          severity: monaco.MarkerSeverity.Error
-        });
+      const trimmedLine = line.trim();
+      if (trimmedLine) {
+        const startsWithKeyword = trimmedLine.startsWith("set") || trimmedLine.startsWith("print") || trimmedLine.startsWith("return") || trimmedLine.startsWith("break");
+        const endsWithSemicolon = trimmedLine.endsWith(';');
+        if (startsWithKeyword && !endsWithSemicolon) {
+          markers.push({
+            startLineNumber: index + 1,
+            startColumn: 1,
+            endLineNumber: index + 1,
+            endColumn: line.length + 1,
+            message: "Błąd składni: brakuje średnika ';' na końcu linii",
+            severity: monaco.MarkerSeverity.Error
+          });
+        }
       }
     });
   
@@ -111,6 +116,28 @@ export const AMMScript = () => {
         },
       });
       monaco.editor.setTheme('ammTheme');
+
+      monaco.languages.setLanguageConfiguration('ammLanguage', {
+        surroundingPairs: [
+          { open: '(', close: ')' },
+          { open: '[', close: ']' },
+          { open: '{', close: '}' },
+          { open: '"', close: '"' }
+        ],
+
+        autoClosingPairs: [
+          { open: '(', close: ')' },
+          { open: '[', close: ']' },
+          { open: '{', close: '}' },
+          { open: '"', close: '"' }
+        ],
+
+        brackets: [
+          ['(', ')'],
+          ['[', ']'],
+          ['{', '}'],
+        ]
+      })
     }
   }, [monaco]);
 
@@ -179,6 +206,7 @@ export const AMMScript = () => {
                 onChange={handleChange}
                 onMount={handleEditorDidMount}
                 theme="ammTheme"
+                autoClo
               />
               </div>
               <img className="line" alt="Line" src="https://c.animaapp.com/a0hzXRiM/img/line-.svg" />

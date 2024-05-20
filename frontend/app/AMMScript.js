@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from 'react';
 import "./AMMScript.css";
 import '../app/globals.css'
 import axios from "axios";
 import Navbar from "../components/Navbar";
-
 import Editor from "@monaco-editor/react";
 
 export const AMMScript = () => {
   const [code, setCode] = useState(""); 
   const [consoleOutput, setConsoleOutput] = useState("");
+  const [editorCode, setEditorCode] = useState('# Write your code here...');
+  const editorRef = useRef(null);
 
   const compile = () => {
     console.log("Kompilacja w toku...");
@@ -22,6 +23,27 @@ export const AMMScript = () => {
       });
   };
 
+  const handleEditorDidMount = (editor) => {
+    editorRef.current = editor;
+
+    editor.onDidFocusEditorText(() => {
+      if (editor.getValue() === '# Write your code here...') {
+        setEditorCode('');
+      }
+    });
+
+    editor.onDidBlurEditorText(() => {
+      if (editor.getValue().trim() === '') {
+        setEditorCode('# Write your code here...');
+      }
+    });
+  };
+
+  const handleChange = (value) => {
+    setEditorCode(value);
+    setCode(value); 
+  };
+
   return (
     <div className="AMM-script">
       <div className="div">
@@ -32,11 +54,12 @@ export const AMMScript = () => {
              <div className="rectangle"/>
               <div className="rectangle-2" />
               <div id="code-input">
-                <Editor
+              <Editor
                   defaultLanguage="plaintext"
-                  value={code}
+                  value={editorCode}
                   defaultValue="# Write your code here..."
-                  onChange={(value) => setCode(value)}
+                  onChange={handleChange}
+                  onMount={handleEditorDidMount}
                   theme="vs-dark"
                 />
               </div>

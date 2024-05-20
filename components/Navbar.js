@@ -11,7 +11,7 @@ export const Navbar = () => {
               <div className="text-wrapper">Home</div>
             </div>
           </a>
-          <a href="/aboutPage" className="about-button">
+          <a href="/AboutPage" className="about-button">
             <div className="div-wrapper">
               <div className="text-wrapper-2">About</div>
             </div>

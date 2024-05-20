@@ -13,6 +13,49 @@ export const AMMScript = () => {
 
   const monaco = useMonaco();
 
+  const validateCode = (code) => {
+    const markers = [];
+  
+    if (!code.trim()) {
+      markers.push({
+        startLineNumber: 1,
+        startColumn: 1,
+        endLineNumber: 1,
+        endColumn: 1,
+        message: "Kod nie może być pusty",
+        severity: monaco.MarkerSeverity.Error
+      });
+    }
+  
+    if (!code.includes('print')) {
+      markers.push({
+        startLineNumber: 1,
+        startColumn: 1,
+        endLineNumber: 1,
+        endColumn: 1,
+        message: "Kod musi zawierać instrukcję 'print'",
+        severity: monaco.MarkerSeverity.Warning
+      });
+    }
+  
+    const lines = code.split('\n');
+    lines.forEach((line, index) => {
+      if (!line.trim().endsWith(';') && line.trim() !== '') {
+        markers.push({
+          startLineNumber: index + 1,
+          startColumn: 1,
+          endLineNumber: index + 1,
+          endColumn: line.length + 1,
+          message: "Błąd składni: brakuje średnika ';' na końcu linii",
+          severity: monaco.MarkerSeverity.Error
+        });
+      }
+    });
+  
+    return markers;
+  };
+  
+  
   useEffect(() => {
     if (monaco) {
       monaco.languages.register({ id: 'ammLanguage' });
@@ -80,8 +123,10 @@ export const AMMScript = () => {
       })
       .catch(error => {
         console.error("Błąd:", error);
+        setConsoleOutput(`Błąd kompilacji: ${error.message}`);
       });
   };
+  
 
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
@@ -101,13 +146,21 @@ export const AMMScript = () => {
     if (monaco) {
       monaco.editor.setModelLanguage(editor.getModel(), 'ammLanguage');
       monaco.editor.setTheme('ammTheme');
+      const markers = validateCode(editor.getValue());
+      monaco.editor.setModelMarkers(editor.getModel(), 'owner', markers);
     }
   };
+  
 
   const handleChange = (value) => {
     setEditorCode(value);
-    setCode(value); 
+    setCode(value);
+    if (monaco) {
+      const markers = validateCode(value);
+      monaco.editor.setModelMarkers(editorRef.current.getModel(), 'owner', markers);
+    }
   };
+  
 
   return (
     <div className="AMM-script">

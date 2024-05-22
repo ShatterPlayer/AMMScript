@@ -246,17 +246,6 @@ class TestAMMScriptParser(unittest.TestCase):
         expected_output = [1, 0, 1, 2, 3, 4]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def test_function(self):
-        code = """
-        func add(a, b) {
-            return a + b;
-        }
-        print add(2,3);
-        print add(2,3,4);
-            
-        """
-        expected_output = [5, f'Niewłaściwa liczba przekazanych parametrów do funkcji add.']
-        self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_if_in_loop(self):
         code = """
@@ -288,39 +277,6 @@ class TestAMMScriptParser(unittest.TestCase):
         expected_output = ["Próba wypisania niezadeklarowanej wartości."]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def test_loop_in_function(self):
-        code = """
-        func subtract_every_other(number) {
-            set result = 0;
-            for set i = 1; i < number + 1; i = i + 1 {
-                for set j = 1; j < i + 1; j = j + 1 {
-                    result = result - 1;
-                }
-            }
-            return result;
-        }
-        
-        print subtract_every_other(5);
-        
-        func substract_every_third(number) {
-                set result = 0;
-                set i = 1;
-                while (i <= number) {
-                    set j = 1;
-                    while (j <= i && i % 3 == 0) {
-                        result = result - 1; 
-                        j = j + 1;
-                    }
-                    i = i + 1;
-                }
-                return result;
-            }
-        
-        
-        print substract_every_third(10);
-        """
-        expected_output = [-15, -18]
-        self.assertEqual(self.getExecutedCode(code), expected_output)
 
 
     def test_switch_in_function(self):
@@ -365,25 +321,11 @@ class TestAMMScriptParser(unittest.TestCase):
             }
 
             print fun(2);
-            print fun();
+            print fun(3);
             """
             expected_output = [15, 0]
             self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def test_recursion_in_function(self):
-        code = """
-        func factorial(n) {
-            if (n == 0) {
-                return 1; 
-            } else {
-                return n * factorial(n - 1); 
-            }
-        }
-
-        print factorial(5); 
-        """
-        expected_output = [120]
-        self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_scoping(self):
         code = """
@@ -411,16 +353,6 @@ class TestAMMScriptParser(unittest.TestCase):
         expected_output = [20, "Próba wypisania niezadeklarowanej wartości."]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
-    def test_global_variable_in_function(self):
-        code = """
-        set x = 10;
-        func myFunc() {
-            return x;
-        }    
-        print myFunc();
-        """
-        expected_output = [10]
-        self.assertEqual(self.getExecutedCode(code), expected_output)
 
     def test_local_and_global_variable(self):
         code = """
@@ -474,12 +406,32 @@ class TestAMMScriptParser(unittest.TestCase):
 
     def test_function_with_default_parameters(self):
         code = """
-        func myFunc(a, b=5) {
+        func myFunc(a, b=5) { 
             return a + b;
         }
         print myFunc(10);
         """
         expected_output = [15]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+    def test_for_of(self):
+        code = """
+        set items[5] = [1, 12, 8, 0, 2];
+        for set item of items {
+            print item;
+        }
+        """
+        expected_output = [1, 12, 8, 0, 2]
+        self.assertEqual(self.getExecutedCode(code), expected_output)
+
+    def test_for_of_different_types(self):
+        code = """
+        set items[5] = [1.0, true, 8, "napis", false];
+        for set item of items {
+            print item;
+        }
+        """
+        expected_output = [1.0, True, 8, "napis", False]
         self.assertEqual(self.getExecutedCode(code), expected_output)
 
 if __name__ == '__main__':

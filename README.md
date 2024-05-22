@@ -15,6 +15,8 @@ AMM Script został stworzony z myślą o prostocie i intuicyjności, aby umożli
 - W projekcie skaner oraz parser zostały zaimplementowane przy użyciu generatora parserów ANTLR 4. Błędy w czasie wykonania obsługiwane są w trakcie przechodzenia po drzewie semantycznym [w visitor](https://github.com/ShatterPlayer/AMMScript/blob/master/AMMScriptParserVisitor.py).
   
 ## Opis tokenów
+Dostępny w pliku: [AMMScriptLexer.g4](https://github.com/ShatterPlayer/AMMScript/blob/master/AMMScriptLexer.g4)
+
 ```
 lexer grammar AMMScriptLexer;
 
@@ -26,6 +28,7 @@ PRINT: 'print';
 IF: 'if';
 ELSE: 'else';
 FOR: 'for';
+OF: 'of';
 WHILE: 'while';
 FUNCTION: 'func';
 RETURN: 'return';
@@ -87,6 +90,7 @@ COLON: ':';
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 ```
 ## Gramatyka formatu
+Dostępna w pliku: [AMMScriptParser.g4](https://github.com/ShatterPlayer/AMMScript/blob/master/AMMScriptParser.g4)
 ```
 parser grammar AMMScriptParser;
 options {
@@ -114,8 +118,8 @@ statementInLoop:
 	| expr SEMICOLON
 	| ifInLoop
 	| loop
-	| BREAK
-	| CONTINUE
+	| BREAK SEMICOLON
+	| CONTINUE SEMICOLON
 	| switch;
 
 statementInFunction:
@@ -137,8 +141,8 @@ statementInFunctionAndLoop:
 	| expr SEMICOLON
 	| ifInFunctionAndLoop
 	| loopInFunction
-	| BREAK
-	| CONTINUE
+	| BREAK SEMICOLON
+	| CONTINUE SEMICOLON
 	| RETURN expr SEMICOLON;
 
 variableDeclaration: SET ID ((EQUAL expr) | (LBRACKET NUMBER RBRACKET EQUAL LBRACKET (expr (COMMA expr)*)? RBRACKET));
@@ -173,9 +177,9 @@ ifInFunctionAndLoop:
 		ELSE IF expr LBRACE statementInFunctionAndLoop* RBRACE
 	)* (ELSE LBRACE statementInFunctionAndLoop* RBRACE)?;
 
-loop: forLoop | whileLoop;
+loop: forOfLoop | forLoop | whileLoop;
 
-loopInFunction: forLoopInFunction | whileLoopInFunction;
+loopInFunction: forOfLoopInFunction | forLoopInFunction | whileLoopInFunction;
 
 forLoop:
 	FOR variableDeclaration SEMICOLON expr SEMICOLON variableAsignment LBRACE statementInLoop*
@@ -184,6 +188,12 @@ forLoop:
 forLoopInFunction:
 	FOR variableDeclaration SEMICOLON expr SEMICOLON variableAsignment LBRACE
 		statementInFunctionAndLoop* RBRACE;
+
+forOfLoop:
+	FOR SET ID OF ID LBRACE statementInLoop* RBRACE;
+
+forOfLoopInFunction:
+	FOR SET ID OF ID LBRACE statementInFunctionAndLoop* RBRACE;
 
 whileLoop: WHILE expr LBRACE statementInLoop* RBRACE;
 
@@ -242,7 +252,8 @@ expr:
 - **Next.js:** Framework Next.js został użyty w celu zapewnienia struktury aplikacji oraz renderowania na poziomie serwera.
 - **TypeScript:** Do typowania statycznego wykorzystano TypeScript, który bazuje na JavaScript.
 - **CSS:** Do stylizacji interfejsu użytkownika wykorzystano język CSS.
-
+- **Monaco Editor:** Edytor Monaco został zaimplementowany jako narzędzie do edycji kodu.
+  
 ## Uruchomienie
 ### Instalacja ANTLR4
 Szczegółowe informacje [tutaj](https://github.com/antlr/antlr4-tools/tree/master).
@@ -295,11 +306,6 @@ Pojawi się wtedy link http://localhost:3000, jeśli się go kliknie będzie wid
 ![AMMScript6](https://github.com/ShatterPlayer/AMMScript/assets/115782747/5fecc80c-7686-4209-9bd1-35cfe8101382)
 
 ## Przykłady użycia
-Przykładowy program w języku AMMScript znajduje się w pliku `program.amm` (nie ma on sensu z logicznego punktu widzenia, służy tylko do prezentacji struktur dostępnych w języku).
-
-Przykładowe drzewo składniowe dla wyrażenia `b = a^(2+2*2);` wygenerowane jedną z powyższych komend w sekcji [generacja drzewa składniowego](#generacja-drzewa-składniowego):
-
-![aritmetic](data/aritmetic.png)
 
 W pliku [Tests.py](https://github.com/ShatterPlayer/AMMScript/blob/master/Tests.py) znajdują się testy zawierające kod napisany w języku AMM Script, które pomogą lepiej zrozumieć działanie tego języka:
 ```

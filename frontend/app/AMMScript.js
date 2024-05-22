@@ -142,7 +142,7 @@ export const AMMScript = () => {
   }, [monaco]);
 
   const compile = () => {
-    console.log("Kompilacja w toku...");
+    console.log("Running...");
     axios.post("http://localhost:5000/interpret", { code }) 
       .then(response => {
         console.log(response.data);
@@ -150,7 +150,7 @@ export const AMMScript = () => {
       })
       .catch(error => {
         console.error("Błąd:", error);
-        setConsoleOutput(`Błąd kompilacji: ${error.message}`);
+        setConsoleOutput(`Błąd: ${error.message}`);
       });
   };
   
@@ -214,7 +214,7 @@ export const AMMScript = () => {
             </div>
           </div>
           <button className="compile-button" onClick={compile}>
-              <div className="text-wrapper-5">compile</div>
+              <div className="text-wrapper-5">Run</div>
           </button>
         </div>
         <div className="text-wrapper-6">© 2024 AMM Script</div>

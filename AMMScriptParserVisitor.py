@@ -22,54 +22,41 @@ class ReturnException(Exception):
         self.value = value
 
 
-class Scope:
-    def __init__(self, parent=None):
-        self.variables = {}
-        self.parent = parent
-
-    def get(self, name):
-        if name in self.variables:
-            return self.variables[name]
-        elif self.parent:
-            return self.parent.get(name)
-        else:
-            raise NameError(f"Nazwa zmiennej '{name}' nie jest zdefiniowana.")
-
-    def set(self, name, value):
-        self.variables[name] = value
-
-    def update(self, other):
-        self.variables.update(other)
-
-    def set_local(self, name, value):
-        self.variables[name] = value
-
-    def __contains__(self, name):
-        return name in self.variables or (self.parent and name in self.parent)
-
 
 class AMMScriptParserVisitor(ParseTreeVisitor):
     def __init__(self, parser):
         self.results = []
         self.functions = {}
         self.parser = parser
-        self.global_scope = Scope()
-        self.current_scope = self.global_scope
+        self.global_scope = {}
+        self.scopes = [self.global_scope]
 
     def push_scope(self):
-        self.current_scope = Scope(self.current_scope)
+        self.scopes.append({})
 
     def pop_scope(self):
-        if self.current_scope.parent is not None:
-            self.current_scope = self.current_scope.parent
+        self.scopes.pop()
+    
+    def current_scope(self):
+        return self.scopes[-1]
 
     def find_scope(self, var_name):
-        scope = self.current_scope
-        while scope:
+        for scope in reversed(self.scopes):
             if var_name in scope:
                 return scope
-            scope = scope.parent
         return None
+    
+    def set_variable(self, name, value):
+        scope = self.find_scope(name)
+        if scope is None:
+            scope = self.current_scope()
+        scope[name] = value
+
+    def get_variable(self, name):
+        scope = self.find_scope(name)
+        if scope is None or name not in scope:
+            raise Exception(f"Nie znaleziono zmiennej {name}")
+        return scope[name]
 
     def getResults(self):
         return self.results
@@ -145,18 +132,18 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 if ctx.expr(i) is None:
                     raise Exception("Niepoprawny rozmiar tablicy")
                 array_elements.append(self.visit(ctx.expr(i)))
-            self.current_scope.set(variable_name, array_elements)
+            
+            self.current_scope()[variable_name] = array_elements
 
             if ctx.expr(array_size) is not None:
                 raise Exception("Niepoprawny rozmiar tablicy")
 
-            self.current_scope.set_local(variable_name, array_elements)
+            
         else:
             value = self.visit(ctx.expr(0))
             print("value:", value)
-            self.current_scope.set_local(variable_name, value)
+            self.current_scope()[variable_name] = value
 
-        print("variables:", self.current_scope.variables)
         return
 
     # Visit a parse tree produced by AMMScriptParser#variableAsignment.
@@ -175,12 +162,11 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 raise Exception("Niepoprawny indeks tablicy")
             
             scope = self.find_scope(variable_name)
-            if scope is None or variable_name not in scope.variables:
+            if scope is None or variable_name not in scope:
                 raise Exception(f"Tablica {variable_name} nie istnieje")
 
-
             index = int(index)
-            array = scope.variables[variable_name]
+            array = scope[variable_name]
 
             if index >= len(array):
                 raise Exception(f"Indeks {index} poza zakresem tablicy {variable_name}")
@@ -194,11 +180,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
             scope = self.find_scope(variable_name)
             if scope:
-                scope.variables[variable_name] = value
+                scope[variable_name] = value
             else:
                 raise Exception(f"Zmienna {variable_name} nie istnieje")
-            
-        print("variables:", self.current_scope.variables)
+   
         return
 
     # Visit a parse tree produced by AMMScriptParser#print.
@@ -206,9 +191,6 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         print('visitPrint')
         expr_value = self.visit(ctx.expr())
         print("value: ", expr_value)
-
-     #   if isinstance(expr_value, str) and expr_value in self.current_scope.variables:
-         #   self.results.append(float(self.current_scope.variables[expr_value]))
 
         if expr_value is None:
             raise Exception(f"Próba wypisania niezadeklarowanej wartości.")
@@ -230,29 +212,27 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                         i += 1
                         continue
                     condition_expr = self.visit(ctx.children[i + 1])
-
                     if condition_expr:
                         executed = True
-                      #  self.push_scope()
+                        self.push_scope()
                         j = i + 3
                         while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                             self.visit(ctx.children[j])
                             j += 1
-                    #    self.pop_scope()
+                        self.pop_scope()
                         break
                 elif token_type == self.parser.ELSE:
                     if executed:
                         i += 1
                         continue
-                   # self.push_scope()
+                    self.push_scope()
                     j = i + 2
                     while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                         self.visit(ctx.children[j])
                         j += 1
-               #     self.pop_scope()
+                    self.pop_scope()
                     break
             i += 1
-
         return None
 
     # Visit a parse tree produced by AMMScriptParser#ifInLoop.
@@ -266,47 +246,41 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 token_type = child.getSymbol().type
                 if token_type == self.parser.IF or (
                         token_type == self.parser.ELSE and i + 1 < len(ctx.children) and ctx.children[i + 1].getSymbol().type == self.parser.IF):
-
                     if executed:
                         i += 1
                         continue
-
                     condition_expr = self.visit(ctx.children[i + 1])
                     if condition_expr:
                         executed = True
-
-                     #   self.push_scope()
+                        self.push_scope()
                         j = i + 3
                         try:
-                            while j < len(ctx.children) and not isinstance(ctx.children[j],
-                                                                           antlr4.tree.Tree.TerminalNode):
+                            while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                                 self.visitStatementInLoop(ctx.children[j])
                                 j += 1
                         except BreakException:
                             raise
                         except ContinueException:
                             raise
+                        self.pop_scope()
                         break
                 elif token_type == self.parser.ELSE:
                     if executed:
                         i += 1
                         continue
-                #    self.push_scope()
+                    self.push_scope()
                     j = i + 2
                     try:
                         while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                             self.visitStatementInLoop(ctx.children[j])
                             j += 1
                     except BreakException:
-                 #       self.pop_scope()
                         raise
                     except ContinueException:
-                  #      self.pop_scope()
                         raise
-                   # self.pop_scope()
+                    self.pop_scope()
                     break
             i += 1
-
         return None
 
     # Visit a parse tree produced by AMMScriptParser#ifInFunction.
@@ -320,45 +294,39 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 token_type = child.getSymbol().type
                 if token_type == self.parser.IF or (
                         token_type == self.parser.ELSE and i + 1 < len(ctx.children) and ctx.children[i + 1].getSymbol().type == self.parser.IF):
-
                     if executed:
                         i += 1
                         continue
-
                     condition_expr = self.visit(ctx.children[i + 1])
                     if condition_expr:
                         executed = True
-                    #    self.push_scope()
+                        self.push_scope()
                         j = i + 3
                         try:
                             while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                                 self.visitStatementInFunction(ctx.children[j])
                                 j += 1
                         except ReturnException:
-                     #       self.pop_scope()
+                            self.pop_scope()
                             raise
-                      #  self.pop_scope()
+                        self.pop_scope()
                         break
                 elif token_type == self.parser.ELSE:
                     if executed:
                         i += 1
                         continue
-                 #   self.push_scope()
+                    self.push_scope()
                     j = i + 2
                     try:
                         while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
-                            self.visitStatementInLoop(ctx.children[j])
+                            self.visitStatementInFunction(ctx.children[j])
                             j += 1
-                    except BreakException:
-                  #      self.pop_scope()
+                    except ReturnException:
+                        self.pop_scope()
                         raise
-                    except ContinueException:
-                   #     self.pop_scope()
-                        raise
-                    #self.pop_scope()
+                    self.pop_scope()
                     break
             i += 1
-
         return None
 
     # Visit a parse tree produced by AMMScriptParser#ifInFunctionAndLoop.
@@ -371,54 +339,52 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
             if isinstance(child, antlr4.tree.Tree.TerminalNode):
                 token_type = child.getSymbol().type
                 if token_type == self.parser.IF or (
-                        token_type == self.parser.ELSE and i + 1 < len(ctx.children) and ctx.children[
-                    i + 1].getSymbol().type == self.parser.IF):
-
+                        token_type == self.parser.ELSE and i + 1 < len(ctx.children) and ctx.children[i + 1].getSymbol().type == self.parser.IF):
                     if executed:
                         i += 1
                         continue
-
                     condition_expr = self.visit(ctx.children[i + 1])
                     if condition_expr:
                         executed = True
-                     #   self.push_scope()
+                        self.push_scope()
                         j = i + 3
                         try:
                             while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                                 self.visitStatementInFunctionAndLoop(ctx.children[j])
                                 j += 1
                         except BreakException:
-                      #      self.pop_scope()
+                            self.pop_scope()
                             raise
                         except ContinueException:
-                       #     self.pop_scope()
+                            self.pop_scope()
                             raise
                         except ReturnException:
-                        #    self.pop_scope()
+                            self.pop_scope()
                             raise
-                       # self.pop_scope()
+                        self.pop_scope()
                         break
                 elif token_type == self.parser.ELSE:
                     if executed:
                         i += 1
                         continue
-                    
-                    #self.push_scope()
+                    self.push_scope()
                     j = i + 2
                     try:
                         while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                             self.visitStatementInFunctionAndLoop(ctx.children[j])
                             j += 1
                     except BreakException:
-                     #   self.pop_scope()
+                        self.pop_scope()
                         raise
                     except ContinueException:
-                      #  self.pop_scope()
+                        self.pop_scope()
                         raise
-                    #self.pop_scope()
+                    except ReturnException:
+                        self.pop_scope()
+                        raise
+                    self.pop_scope()
                     break
             i += 1
-
         return None
 
     # Visit a parse tree produced by AMMScriptParser#loop.
@@ -432,7 +398,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by AMMScriptParser#forLoop.
     def visitForLoop(self, ctx: AMMScriptParser.ForLoopContext):
         print('visitForLoop')
-       # self.push_scope()
+        self.push_scope()
         self.visit(ctx.variableDeclaration())
         while True:
             condition_result = self.visit(ctx.expr())
@@ -448,7 +414,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 break
             except ContinueException:
                 continue
-        #    self.pop_scope()
+        self.pop_scope()
 
     # Visit a parse tree produced by AMMScriptParser#forLoopInFunction.
     def visitForLoopInFunction(self, ctx: AMMScriptParser.ForLoopInFunctionContext):
@@ -466,34 +432,36 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                     self.visit(statement)
                 self.visit(ctx.variableAsignment())
             except ReturnException:
+                self.pop_scope()
                 raise
             except BreakException:
                 break
             except ContinueException:
                 continue
-          # self.pop_scope()
+        self.pop_scope()
+
 
      # Visit a parse tree produced by AMMScriptParser#forOfLoop.
     def visitForOfLoop(self, ctx:AMMScriptParser.ForOfLoopContext):
         iterableVariable = ctx.ID(0).getText()
 
-        if iterableVariable in self.current_scope:
+        if iterableVariable in self.current_scope():
             raise Exception(f"Zmienna {iterableVariable} już istnieje")
 
         arrayVariable = ctx.ID(1).getText()
 
-        if arrayVariable not in self.current_scope:
+        if arrayVariable not in self.current_scope():
             raise Exception(f"Tablica {arrayVariable} nie istnieje")
 
-        array = self.current_scope.get(arrayVariable)
+        array = self.current_scope().get(arrayVariable)
 
         if not isinstance(array, list):
             raise Exception(f"Zmienna {arrayVariable} nie jest tablicą")
         
         i = 0
-
+        self.push_scope()
         while i < len(array):
-            self.current_scope.set(iterableVariable, array[i])
+            self.current_scope()[iterableVariable] = array[i]
             try:
                 for statement in ctx.statementInLoop():
                     self.visit(statement)
@@ -503,7 +471,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 i += 1
                 continue
             i += 1
-        
+        self.pop_scope()
 
 
 
@@ -511,23 +479,23 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     def visitForOfLoopInFunction(self, ctx:AMMScriptParser.ForOfLoopInFunctionContext):
         iterableVariable = ctx.ID(0).getText()
 
-        if iterableVariable in self.current_scope.variables:
+        if iterableVariable in self.current_scope():
             raise Exception(f"Zmienna {iterableVariable} już istnieje")
 
         arrayVariable = ctx.ID(1).getText()
 
-        if arrayVariable not in self.current_scope:
+        if arrayVariable not in self.current_scope():
             raise Exception(f"Tablica {arrayVariable} nie istnieje")
 
-        array = self.current_scope.get(arrayVariable)
+        array = self.current_scope().get(arrayVariable)
 
         if not isinstance(array, list):
             raise Exception(f"Zmienna {arrayVariable} nie jest tablicą")
         
         i = 0
-
+        self.push_scope()
         while i < len(array):
-            self.current_scope.set(iterableVariable, array[i])
+            self.current_scope()[iterableVariable] =  array[i]
             try:
                 for statement in ctx.statementInFunctionAndLoop():
                     self.visit(statement)
@@ -539,13 +507,13 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 i += 1
                 continue
             i += 1
-
+        self.pop_scope()
 
 
     # Visit a parse tree produced by AMMScriptParser#whileLoop.
     def visitWhileLoop(self, ctx: AMMScriptParser.WhileLoopContext):
         print("visitWhileLoop")
-       # self.push_scope()
+        self.push_scope()
         while True:
 
             condition = self.visit(ctx.expr())
@@ -560,14 +528,14 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
             except ContinueException:
                 continue
 
-        #self.pop_scope()
+        self.pop_scope()
         return None
 
         # Visit a parse tree produced by AMMScriptParser#whileLoopInFunction.
 
     def visitWhileLoopInFunction(self, ctx: AMMScriptParser.WhileLoopInFunctionContext):
         print("visitWhileLoopInFunction")
-        #self.push_scope()
+        self.push_scope()
         while True:
 
             condition = self.visit(ctx.expr())
@@ -578,20 +546,19 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 for statement in ctx.statementInFunctionAndLoop():
                     self.visit(statement)
             except ReturnException:
-         #       self.pop_scope()
+                self.pop_scope()
                 raise
             except BreakException:
                 break
             except ContinueException:
                 continue
-        #self.pop_scope()
+        self.pop_scope()
         return None
 
     # Visit a parse tree produced by AMMScriptParser#switch.
     def visitSwitch(self, ctx: AMMScriptParser.SwitchContext):
         print("visitSwitch")
         switch_value = self.visit(ctx.expr(0))
-
         executed = False
         default_statements = None
 
@@ -604,12 +571,12 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                     case_expr = self.visit(ctx.children[i + 1])
                     if switch_value == case_expr or executed:
                         executed = True
-           #             self.push_scope()
+                        self.push_scope()
                         j = i + 3
                         while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                             self.visit(ctx.children[j])
                             j += 1
-            #            self.pop_scope()
+                        self.pop_scope()
                         if j < len(ctx.children) and isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode) and \
                                 ctx.children[j].getSymbol().type == self.parser.BREAK:
                             break
@@ -625,12 +592,12 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 i += 1
 
         if not executed and default_statements:
-           # self.push_scope()
+            self.push_scope()
             for stmt in default_statements:
                 if isinstance(stmt, antlr4.tree.Tree.TerminalNode) and stmt.getText() == '}':
                     break
                 self.visit(stmt)
-           # self.pop_scope()
+            self.pop_scope()
 
         return None
 
@@ -638,7 +605,6 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     def visitSwitchInFunction(self, ctx: AMMScriptParser.SwitchInFunctionContext):
         print("visitSwitchInFunction")
         switch_value = self.visit(ctx.expr(0))
-
         executed = False
         default_statements = None
 
@@ -651,15 +617,16 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                     case_expr = self.visit(ctx.children[i + 1])
                     if switch_value == case_expr or executed:
                         executed = True
-           #             self.push_scope()
+                        self.push_scope()
                         j = i + 3
                         while j < len(ctx.children) and not isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode):
                             try:
                                 self.visit(ctx.children[j])
                                 j += 1
                             except ReturnException:
-            #                    self.pop_scope()
+                                self.pop_scope()
                                 raise
+                        self.pop_scope()
                         if j < len(ctx.children) and isinstance(ctx.children[j], antlr4.tree.Tree.TerminalNode) and \
                                 ctx.children[j].getSymbol().type == self.parser.BREAK:
                             break
@@ -675,16 +642,16 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
                 i += 1
 
         if not executed and default_statements:
+            self.push_scope()
             try:
                 for stmt in default_statements:
                     if isinstance(stmt, antlr4.tree.Tree.TerminalNode) and stmt.getText() == '}':
                         break
                     self.visit(stmt)
             except ReturnException:
-             #   self.pop_scope()
+                self.pop_scope()
                 raise
-            #self.pop_scope()
-
+            self.pop_scope()
 
         return None
 
@@ -693,6 +660,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         func_name = ctx.ID(0).getText()
         print(f"funkcja: {func_name}")
         from antlr.AMMScriptParser import AMMScriptParser
+        
         parameters = {}
         params_ctx = ctx.children[ctx.children.index(ctx.LPAREN()) + 1:ctx.children.index(ctx.RPAREN())]
         i = 0
@@ -720,10 +688,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
             'body': body
         }
 
-        self.current_scope.set(func_name, {
+        self.current_scope()[func_name] = {
             'parameters': parameters,
             'body': body
-        })
+        }
 
         print(f"Funkcja: {func_name}, parametry: {parameters}")
 
@@ -732,24 +700,24 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         func_name = ctx.ID().getText()
         
         if func_name not in self.functions:
-            raise Exception(f"Nie zdefiniowano funkcji '{func_name}'.")
+            raise Exception(f"Nie zdefiniowano funckji {func_name}.")
 
         func_info = self.functions[func_name]
         parameters = func_info['parameters']
         body = func_info['body']
 
         passed_arguments = [self.visit(arg) for arg in ctx.expr()]
-        local_scope = Scope(parent=self.current_scope)
+        local_scope = {}
 
         for param, value in zip(parameters.keys(), passed_arguments):
-            local_scope.set(param, value)
+            local_scope[param] = value
 
         for param in parameters.keys():
-            if param not in local_scope.variables:
-                local_scope.set(param, parameters[param])
+            if param not in local_scope:
+                local_scope[param] = parameters[param]
 
-        previous_scope = self.current_scope
-        self.current_scope = local_scope
+        self.scopes.append(local_scope)
+        previous_scope = self.current_scope()
 
         return_value = None
         try:
@@ -758,10 +726,9 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         except ReturnException as e:
             return_value = e.value
         finally:
-            self.current_scope = previous_scope
+            self.pop_scope()
 
         return return_value
-
         # Visit a parse tree produced by AMMScriptParser#exprTrue.
 
     def visitExprTrue(self, ctx: AMMScriptParser.ExprTrueContext):
@@ -778,14 +745,16 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         from antlr.AMMScriptParser import AMMScriptParser
 
         if isinstance(left, str):
-            if left in self.current_scope.variables and isinstance(self.current_scope.variables[left], (int, float)):
-                left = self.current_scope.variables[left]
+            scope = self.find_scope(left)
+            if scope and isinstance(scope[left], (int, float)):
+                left = scope[left]
             else:
                 raise Exception(f"Wyrażenie {left} nie ma wartości liczbowej")
 
         if isinstance(right, str):
-            if right in self.current_scope.variables and isinstance(self.current_scope.variables[right], (int, float)):
-                right = self.current_scope.variables[right]
+            scope = self.find_scope(right)
+            if scope and isinstance(scope[right], (int, float)):
+                right = scope[right]
             else:
                 raise Exception(f"Wyrażenie {right} nie ma wartości liczbowej")
 
@@ -822,14 +791,16 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         from antlr.AMMScriptParser import AMMScriptParser
 
         if isinstance(left, str):
-            if left in self.current_scope.variables and isinstance(self.current_scope.variables[left], (int, float)):
-                left = self.current_scope.variables[left]
+            scope = self.find_scope(left)
+            if scope and isinstance(scope[left], (int, float)):
+                left = scope[left]
             else:
                 raise Exception(f"Wyrażenie {left} nie ma wartości liczbowej")
 
         if isinstance(right, str):
-            if right in self.current_scope.variables and isinstance(self.current_scope.variables[right], (int, float)):
-                right = self.current_scope.variables[right]
+            scope = self.find_scope(right)
+            if scope and isinstance(scope[right], (int, float)):
+                right = scope[right]
             else:
                 raise Exception(f"Wyrażenie {right} nie ma wartości liczbowej")
 
@@ -882,8 +853,10 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by AMMScriptParser#exprId.
     def visitExprId(self, ctx: AMMScriptParser.ExprIdContext):
         var_name = ctx.ID().getText()
-        if var_name in self.current_scope.variables:
-            return self.current_scope.get(var_name)
+        scope = self.find_scope(var_name)
+        if scope is None:
+            raise Exception(f"Próba wypisania niezadeklarowanej wartości.")
+        return scope[var_name]
 
     # Visit a parse tree produced by AMMScriptParser#exprPower.
     def visitExprPower(self, ctx: AMMScriptParser.ExprPowerContext):
@@ -920,7 +893,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#exprNumber.
     def visitExprVariable(self, ctx: AMMScriptParser.ExprNumberContext):
-        print('visitExprNumber')
+        print('visitExprVariable')
         return float(ctx.NUMBER().getText())
 
     def count_default_parameters(self, parameters):
@@ -945,17 +918,17 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
 
         passed_arguments = [self.visit(arg) for arg in ctx.expr()]
-        local_scope = Scope(parent=self.current_scope)
+        local_scope = {}
         for param, value in zip(parameters.keys(), passed_arguments):
-            local_scope.set(param, value)
+            local_scope[param] = value
 
         for param in parameters.keys():
-            if param not in local_scope.variables:
-                local_scope.set(param, parameters[param])
+            if param not in local_scope:
+                local_scope[param] = parameters[param]
 
 
-        previous_scope = self.current_scope
-        self.current_scope = local_scope
+        previous_scope = self.current_scope()
+        self.scopes.append(local_scope)
 
         return_value = None
         try:
@@ -964,7 +937,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         except ReturnException as e:
             return_value = e.value
         finally:
-            self.current_scope = previous_scope
+            self.pop_scope()
 
         return return_value
 
@@ -989,7 +962,7 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         return args
 
     def assign_parameters(self, parameters, passed_arguments):
-        local_scope = Scope(parent=self.current_scope)
+        local_scope = {**self.current_scope()}
         param_names = list(parameters.keys())
 
         for i, arg in enumerate(passed_arguments):
@@ -1003,13 +976,13 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         for param_name, default_value in parameters.items():
             if param_name not in local_scope.variables:
                 if default_value is not None:
-                    local_scope.set(param_name, default_value)
+                    local_scope[param_name] = default_value
                 else:
                     raise Exception(f"Nie podano wartości dla {param_name}")
 
-        for param_name in local_scope.variables:
-            print(f"{param_name} : {local_scope.variables[param_name]}")
-        print(f"Local scope : {list(local_scope.variables.keys())}")
+        for param_name in local_scope:
+            print(f"{param_name} : {local_scope[param_name]}")
+        print(f"Local scope : {list(local_scope.keys())}")
 
         return local_scope
 
@@ -1022,20 +995,20 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         if isinstance(index, int) == False:
             raise Exception("Niepoprawny indeks tablicy")
 
-        if variableName not in self.current_scope.variables:
+        scope = self.find_scope(variableName)
+        if scope is None or variableName not in scope:
             raise Exception(f"Tablica {variableName} nie istnieje")
 
         print("variableName:", variableName)
         print("index:", index)
 
-        print('variables:', self.current_scope.variables)
 
         index = int(index)
 
-        if index >= len(self.current_scope.variables[variableName]):
+        if index >= len(scope[variableName]):
             raise Exception(f"Indeks {index} poza zakresem tablicy {variableName}")
 
-        return self.current_scope.variables[variableName][index]
+        return scope[variableName][index]
 
 
 del AMMScriptParser

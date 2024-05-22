@@ -24,8 +24,8 @@ statementInLoop:
 	| expr SEMICOLON
 	| ifInLoop
 	| loop
-	| BREAK
-	| CONTINUE
+	| BREAK SEMICOLON
+	| CONTINUE SEMICOLON
 	| switch;
 
 statementInFunction:
@@ -47,8 +47,8 @@ statementInFunctionAndLoop:
 	| expr SEMICOLON
 	| ifInFunctionAndLoop
 	| loopInFunction
-	| BREAK
-	| CONTINUE
+	| BREAK SEMICOLON
+	| CONTINUE SEMICOLON
 	| RETURN expr SEMICOLON;
 
 variableDeclaration: SET ID ((EQUAL expr) | (LBRACKET NUMBER RBRACKET EQUAL LBRACKET (expr (COMMA expr)*)? RBRACKET));
@@ -83,9 +83,9 @@ ifInFunctionAndLoop:
 		ELSE IF expr LBRACE statementInFunctionAndLoop* RBRACE
 	)* (ELSE LBRACE statementInFunctionAndLoop* RBRACE)?;
 
-loop: forLoop | whileLoop;
+loop: forOfLoop | forLoop | whileLoop;
 
-loopInFunction: forLoopInFunction | whileLoopInFunction;
+loopInFunction: forOfLoopInFunction | forLoopInFunction | whileLoopInFunction;
 
 forLoop:
 	FOR variableDeclaration SEMICOLON expr SEMICOLON variableAsignment LBRACE statementInLoop*
@@ -94,6 +94,12 @@ forLoop:
 forLoopInFunction:
 	FOR variableDeclaration SEMICOLON expr SEMICOLON variableAsignment LBRACE
 		statementInFunctionAndLoop* RBRACE;
+
+forOfLoop:
+	FOR SET ID OF ID LBRACE statementInLoop* RBRACE;
+
+forOfLoopInFunction:
+	FOR SET ID OF ID LBRACE statementInFunctionAndLoop* RBRACE;
 
 whileLoop: WHILE expr LBRACE statementInLoop* RBRACE;
 

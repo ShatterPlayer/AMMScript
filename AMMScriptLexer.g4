@@ -8,6 +8,7 @@ PRINT: 'print';
 IF: 'if';
 ELSE: 'else';
 FOR: 'for';
+OF: 'of';
 WHILE: 'while';
 FUNCTION: 'func';
 RETURN: 'return';

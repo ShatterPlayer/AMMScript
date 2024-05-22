@@ -89,6 +89,16 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by AMMScriptParser#forOfLoop.
+    def visitForOfLoop(self, ctx:AMMScriptParser.ForOfLoopContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by AMMScriptParser#forOfLoopInFunction.
+    def visitForOfLoopInFunction(self, ctx:AMMScriptParser.ForOfLoopInFunctionContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by AMMScriptParser#whileLoop.
     def visitWhileLoop(self, ctx:AMMScriptParser.WhileLoopContext):
         return self.visitChildren(ctx)

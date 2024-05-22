@@ -84,7 +84,12 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#statementInLoop.
     def visitStatementInLoop(self, ctx: AMMScriptParser.StatementInLoopContext):
-        return self.visitChildren(ctx)
+        if ctx.BREAK():
+            raise BreakException()
+        elif ctx.CONTINUE():
+            raise ContinueException()
+        else:
+            return self.visitChildren(ctx)
 
     # Visit a parse tree produced by AMMScriptParser#statementInFunction.
     def visitStatementInFunction(self, ctx: AMMScriptParser.StatementInFunctionContext):
@@ -418,23 +423,11 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by AMMScriptParser#loop.
     def visitLoop(self, ctx: AMMScriptParser.LoopContext):
-        print('visitLoop')
-        if ctx.forLoop():
-            return self.visitForLoop(ctx.forLoop())
-        elif ctx.whileLoop():
-            return self.visitWhileLoop(ctx.whileLoop())
-        else:
-            raise Exception("Nieznany typ pętli w kontekście LoopContext")
+        return self.visitChildren(ctx)
 
     # Visit a parse tree produced by AMMScriptParser#loopInFunction.
     def visitLoopInFunction(self, ctx: AMMScriptParser.LoopInFunctionContext):
-        print('visitLoopInFunction')
-        if ctx.forLoopInFunction():
-            return self.visitForLoopInFunction(ctx.forLoopInFunction())
-        elif ctx.whileLoopInFunction():
-            return self.visitWhileLoopInFunction(ctx.whileLoopInFunction())
-        else:
-            raise Exception("Nieznany typ pętli w kontekście LoopContext")
+        return self.visitChildren(ctx)
 
     # Visit a parse tree produced by AMMScriptParser#forLoop.
     def visitForLoop(self, ctx: AMMScriptParser.ForLoopContext):
@@ -479,6 +472,75 @@ class AMMScriptParserVisitor(ParseTreeVisitor):
             except ContinueException:
                 continue
           # self.pop_scope()
+
+     # Visit a parse tree produced by AMMScriptParser#forOfLoop.
+    def visitForOfLoop(self, ctx:AMMScriptParser.ForOfLoopContext):
+        iterableVariable = ctx.ID(0).getText()
+
+        if iterableVariable in self.current_scope:
+            raise Exception(f"Zmienna {iterableVariable} już istnieje")
+
+        arrayVariable = ctx.ID(1).getText()
+
+        if arrayVariable not in self.current_scope:
+            raise Exception(f"Tablica {arrayVariable} nie istnieje")
+
+        array = self.current_scope.get(arrayVariable)
+
+        if not isinstance(array, list):
+            raise Exception(f"Zmienna {arrayVariable} nie jest tablicą")
+        
+        i = 0
+
+        while i < len(array):
+            self.current_scope.set(iterableVariable, array[i])
+            try:
+                for statement in ctx.statementInLoop():
+                    self.visit(statement)
+            except BreakException:
+                break
+            except ContinueException:
+                i += 1
+                continue
+            i += 1
+        
+
+
+
+    # Visit a parse tree produced by AMMScriptParser#forOfLoopInFunction.
+    def visitForOfLoopInFunction(self, ctx:AMMScriptParser.ForOfLoopInFunctionContext):
+        iterableVariable = ctx.ID(0).getText()
+
+        if iterableVariable in self.current_scope.variables:
+            raise Exception(f"Zmienna {iterableVariable} już istnieje")
+
+        arrayVariable = ctx.ID(1).getText()
+
+        if arrayVariable not in self.current_scope:
+            raise Exception(f"Tablica {arrayVariable} nie istnieje")
+
+        array = self.current_scope.get(arrayVariable)
+
+        if not isinstance(array, list):
+            raise Exception(f"Zmienna {arrayVariable} nie jest tablicą")
+        
+        i = 0
+
+        while i < len(array):
+            self.current_scope.set(iterableVariable, array[i])
+            try:
+                for statement in ctx.statementInFunctionAndLoop():
+                    self.visit(statement)
+            except ReturnException:
+                raise
+            except BreakException:
+                break
+            except ContinueException:
+                i += 1
+                continue
+            i += 1
+
+
 
     # Visit a parse tree produced by AMMScriptParser#whileLoop.
     def visitWhileLoop(self, ctx: AMMScriptParser.WhileLoopContext):

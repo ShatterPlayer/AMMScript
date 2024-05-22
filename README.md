@@ -295,15 +295,15 @@ Kolejnym krokiem jest wpisanie w terminalu:
 ```
 npm run dev
 ```
-Pojawi się wtedy link http://localhost:3000, jeśli się go kliknie będzie widać poniższą stronę:
+Po uruchomieniu aplikacji, otwórz przeglądarkę i przejdź do http://localhost:3000. Po kliknięciu linku zobaczysz stronę, jak pokazano poniżej:
 (podgląd)
+![1AMMScipt](https://github.com/ShatterPlayer/AMMScript/assets/115782747/13d02dfd-f87b-44a6-97cd-cded4aa63284)
+![2AMMScript](https://github.com/ShatterPlayer/AMMScript/assets/115782747/5ce00aa6-f71a-4709-bb80-88fa19098727)
+![3AMMScript](https://github.com/ShatterPlayer/AMMScript/assets/115782747/4587b0b9-ead9-406a-be3c-9ae890eca9ae)
+![4AMMScript](https://github.com/ShatterPlayer/AMMScript/assets/115782747/25607e5c-6ca9-4e52-8f8c-f7581e73f438)
+![5AMMScript](https://github.com/ShatterPlayer/AMMScript/assets/115782747/b9c2fd8a-ac4f-48a0-93a5-be1971c0d06d)
+![6AMMScript](https://github.com/ShatterPlayer/AMMScript/assets/115782747/82436d39-08a1-4aa4-9bcb-453dfe3fa35a)
 
-![AMMScript1](https://github.com/ShatterPlayer/AMMScript/assets/115782747/c3e5c2bf-66d5-4289-b541-7319145d6bbd)
-![AMMScript2](https://github.com/ShatterPlayer/AMMScript/assets/115782747/b6637b56-6018-4d8b-b738-c5fa80b03c50)
-![AMMScript3](https://github.com/ShatterPlayer/AMMScript/assets/115782747/6e239890-7804-406c-9c0e-0d707d8149d1)
-![AMMScript4](https://github.com/ShatterPlayer/AMMScript/assets/115782747/1eaad806-77ed-4d2e-98b7-728cd948b8b4)
-![AMMScript5](https://github.com/ShatterPlayer/AMMScript/assets/115782747/664e9715-9165-4c4f-9152-9a587715bef4)
-![AMMScript6](https://github.com/ShatterPlayer/AMMScript/assets/115782747/5fecc80c-7686-4209-9bd1-35cfe8101382)
 
 ## Przykłady użycia
 
